@@ -1,76 +1,73 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>تسجيل الدخول</title>
+
 <style>
 body{
-  font-family:Tahoma;
-  background:#f6f7f9;
+    font-family: Tahoma;
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#f7f7f7;
+    position:relative;
 }
 
-/* كرت تسجيل الدخول */
-.login-card{
-  position:relative;
-  max-width:420px;
-  margin:100px auto;
-  padding:30px;
-  border-radius:15px;
-  background:white;
-  box-shadow:0 0 15px rgba(0,0,0,.1);
-  text-align:center;
-  overflow:hidden;
+/* العلامة المائية */
+body::before{
+    content:"";
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:70%;
+    height:70%;
+    background:url("{{ url_for('static', filename='logo.png') }}") no-repeat center;
+    background-size:contain;
+    opacity:0.12;
+    z-index:-1;
 }
 
-/* العلامة المائية الكبيرة */
-.login-card::before{
-  content:"";
-  background:url("{{ url_for('static', filename='logo.png') }}") no-repeat center;
-  background-size:350px;   /* ← حجم كبير */
-  opacity:0.25;            /* ← وضوح أعلى */
-  position:absolute;
-  top:-40px;
-  left:-40px;
-  right:-40px;
-  bottom:-40px;
-  z-index:0;
-}
-
-/* نخلي المحتوى فوق اللوجو */
-.login-card *{
-  position:relative;
-  z-index:1;
-}
-
-h2{
-  margin-bottom:20px;
+.card{
+    background:white;
+    padding:30px;
+    border-radius:14px;
+    width:320px;
+    box-shadow:0 0 15px rgba(0,0,0,.1);
+    text-align:center;
 }
 
 input{
-  width:100%;
-  padding:12px;
-  border-radius:10px;
-  border:1px solid #ccc;
-  margin-bottom:12px;
-  font-size:15px;
+    width:100%;
+    padding:10px;
+    margin-top:10px;
 }
 
 button{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:#4f46e5;
-  color:white;
-  font-size:16px;
-  cursor:pointer;
-}
-
-button:hover{
-  background:#4338ca;
-}
-
-.error{
-  background:#ffecec;
-  border:1px solid #ffb3b3;
-  color:#b00000;
-  padding:10px;
-  border-radius:10px;
-  margin-bottom:12px;
+    margin-top:15px;
+    padding:10px 20px;
 }
 </style>
+</head>
+
+<body>
+
+<div class="card">
+    <h3>إدارة محطة كهرباء الشهيد علي سبع</h3>
+
+    {% if error %}
+      <p style="color:red">{{ error }}</p>
+    {% endif %}
+
+    <form method="post">
+        <input name="emp_id" placeholder="الرقم الوظيفي" required>
+        <input type="password" name="password" placeholder="كلمة المرور" required>
+        <button>تسجيل الدخول</button>
+    </form>
+</div>
+
+</body>
+</html>

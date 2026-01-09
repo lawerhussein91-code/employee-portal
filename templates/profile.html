@@ -1,148 +1,101 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <title>بيانات الموظف</title>
+<meta charset="utf-8">
+<title>بيانات الموظف</title>
 
-  <style>
-    body{
-      font-family:Tahoma;
-      max-width:800px;
-      margin:40px auto;
-      padding:0 15px;
-      background:#f9fafb;
-    }
+<style>
+body{
+    font-family:Tahoma;
+    margin:0;
+    padding:40px;
+    background:#f7f7f7;
+    position:relative;
+}
 
-    .header{
-      text-align:center;
-      margin-bottom:20px;
-      position:relative;
-    }
+/* العلامة المائية */
+body::before{
+    content:"";
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:80%;
+    height:80%;
+    background:url("{{ url_for('static', filename='logo.png') }}") no-repeat center;
+    background-size:contain;
+    opacity:0.12;
+    z-index:-1;
+}
 
-    .header h2{
-      margin-bottom:10px;
-    }
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
 
-    /* اللوجو علامة مائية */
-    .watermark{
-      position:absolute;
-      top:60px;
-      left:50%;
-      transform:translateX(-50%);
-      opacity:0.15;
-      width:220px;
-      z-index:-1;
-    }
+.card{
+    background:white;
+    border-radius:15px;
+    padding:25px;
+    margin-top:20px;
+}
 
-    .actions{
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      margin-bottom:15px;
-    }
+table{
+    width:100%;
+    border-collapse:collapse;
+}
 
-    .btn{
-      padding:8px 14px;
-      border:1px solid #ccc;
-      border-radius:10px;
-      text-decoration:none;
-      color:#333;
-      background:white;
-    }
+td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+}
 
-    .card{
-      background:white;
-      border-radius:15px;
-      padding:20px;
-      box-shadow:0 0 10px rgba(0,0,0,.05);
-    }
+.k{
+    width:180px;
+    color:#555;
+    font-weight:bold;
+}
 
-    table{
-      width:100%;
-      border-collapse:collapse;
-    }
+.footer{
+    margin-top:40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
 
-    td{
-      padding:12px;
-      border-bottom:1px solid #eee;
-    }
-
-    .k{
-      width:200px;
-      color:#555;
-      font-weight:bold;
-    }
-
-    .flash{
-      background:#eef5ff;
-      border:1px solid #cfe2ff;
-      padding:10px;
-      border-radius:10px;
-      margin-bottom:15px;
-      text-align:center;
-    }
-
-    /* التوقيع */
-    .signature{
-      text-align:left;
-      margin-top:30px;
-      opacity:0.9;
-    }
-
-    .signature img{
-      width:140px;
-      display:block;
-    }
-
-    .signature span{
-      font-size:13px;
-      color:#555;
-    }
-  </style>
+.footer img{
+    height:70px;
+}
+</style>
 </head>
 
 <body>
 
-<div class="header">
-
-  <h2>إدارة محطة كهرباء الشهيد علي سبع</h2>
-
-  <!-- اللوجو -->
-  <img src="{{ url_for('static', filename='logo.png') }}" class="watermark">
-
+<div class="top">
+    <h2>إدارة محطة كهرباء الشهيد علي سبع</h2>
+    <div>
+        <a href="{{ url_for('change_password') }}">تغيير الباسوورد</a> |
+        <a href="{{ url_for('logout') }}">تسجيل خروج</a>
+    </div>
 </div>
-
-<div class="actions">
-  <a class="btn" href="{{ url_for('change_password') }}">تغيير الباسوورد</a>
-  <a class="btn" href="{{ url_for('logout') }}">تسجيل خروج</a>
-</div>
-
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-  <div class="flash">{{ messages[0] }}</div>
-{% endif %}
-{% endwith %}
 
 <div class="card">
-
-  <h4>رقمك الوظيفي : {{ emp_id }}</h4>
-
-  <table>
-    <tr><td class="k">الاسم الكامل</td><td>{{ data["الاسم الكامل"] }}</td></tr>
-    <tr><td class="k">العنوان الوظيفي</td><td>{{ data["العنوان الوظيفي"] }}</td></tr>
-    <tr><td class="k">الدرجة</td><td>{{ data["الدرجة"] }}</td></tr>
-    <tr><td class="k">المرحلة</td><td>{{ data["المرحلة"] }}</td></tr>
-    <tr><td class="k">تاريخ الاستحقاق</td><td>{{ data["تاريخ الاستحقاق"] }}</td></tr>
-    <tr><td class="k">عدد كتب الشكر</td><td>{{ data["عدد كتب الشكر"] }}</td></tr>
-    <tr><td class="k">الملاحظات</td><td>{{ data["الملاحظات"] }}</td></tr>
-  </table>
-
+<table>
+<tr><td class="k">رقمك الوظيفي</td><td>{{ emp_id }}</td></tr>
+<tr><td class="k">الاسم الكامل</td><td>{{ data["الاسم الكامل"] }}</td></tr>
+<tr><td class="k">العنوان الوظيفي</td><td>{{ data["العنوان الوظيفي"] }}</td></tr>
+<tr><td class="k">الدرجة</td><td>{{ data["الدرجة"] }}</td></tr>
+<tr><td class="k">المرحلة</td><td>{{ data["المرحلة"] }}</td></tr>
+<tr><td class="k">تاريخ الاستحقاق</td><td>{{ data["تاريخ الاستحقاق"] }}</td></tr>
+<tr><td class="k">عدد كتب الشكر</td><td>{{ data["عدد كتب الشكر"] }}</td></tr>
+<tr><td class="k">الملاحظات</td><td>{{ data["الملاحظات"] }}</td></tr>
+</table>
 </div>
 
-<!-- التوقيع -->
-<div class="signature">
-  <img src="{{ url_for('static', filename='sign.png') }}">
-  <span>حسين التميمي</span>
+<div class="footer">
+    <div>حسين التميمي</div>
+    <img src="{{ url_for('static', filename='sign.png') }}">
 </div>
 
 </body>
