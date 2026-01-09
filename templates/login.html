@@ -4,69 +4,129 @@
 <meta charset="utf-8">
 <title>تسجيل الدخول</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700&display=swap" rel="stylesheet">
+
 <style>
 body{
-    font-family: Tahoma;
-    margin:0;
-    min-height:100vh;
+    background:linear-gradient(135deg,#0b4fa3,#1c6dd0);
+    height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    background:#f7f7f7;
-    position:relative;
+    font-family:'Cairo', sans-serif;
 }
 
-/* العلامة المائية */
-body::before{
+/* الصندوق */
+.box{
+    background:white;
+    padding:40px 30px;
+    width:340px;
+    border-radius:22px;
+    text-align:center;
+    position:relative;
+    box-shadow:0 20px 35px rgba(0,0,0,.35);
+}
+
+/* علامة مائية */
+.box::before{
     content:"";
-    position:fixed;
+    position:absolute;
     top:50%;
     left:50%;
     transform:translate(-50%,-50%);
-    width:70%;
-    height:70%;
-    background:url("{{ url_for('static', filename='logo.png') }}") no-repeat center;
+    width:75%;
+    height:75%;
+    background:url("{{ url_for('static', filename='watermark.jpg') }}") no-repeat center;
     background-size:contain;
-    opacity:0.12;
-    z-index:-1;
+    opacity:0.12; /* متوسطة */
+    z-index:0;
 }
 
-.card{
-    background:white;
-    padding:30px;
-    border-radius:14px;
-    width:320px;
-    box-shadow:0 0 15px rgba(0,0,0,.1);
-    text-align:center;
+/* المحتوى فوق العلامة */
+.content{
+    position:relative;
+    z-index:1;
 }
 
+/* الشعار */
+.logo{
+    height:80px;
+    display:block;
+    margin:0 auto 10px auto;
+}
+
+/* العناوين */
+.title{
+    font-size:20px;
+    font-weight:700;
+    background:linear-gradient(90deg,#0b4fa3,#1c6dd0);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:5px;
+}
+
+.sub{
+    font-size:15px;
+    color:#0b4fa3;
+    font-weight:600;
+    line-height:1.7;
+    margin-bottom:18px;
+}
+
+/* الحقول */
 input{
     width:100%;
-    padding:10px;
-    margin-top:10px;
+    padding:11px;
+    margin:10px 0;
+    border-radius:8px;
+    border:1px solid #bbb;
+    font-family:'Cairo';
 }
 
+/* الزر */
 button{
-    margin-top:15px;
-    padding:10px 20px;
+    width:100%;
+    padding:11px;
+    background:linear-gradient(135deg,#0b4fa3,#1c6dd0);
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 6px 0 #083b7c;
+}
+
+button:active{
+    transform:translateY(3px);
+    box-shadow:0 3px 0 #083b7c;
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-    <h3>إدارة محطة كهرباء الشهيد علي سبع</h3>
+<div class="box">
 
-    {% if error %}
-      <p style="color:red">{{ error }}</p>
-    {% endif %}
+<div class="content">
 
-    <form method="post">
-        <input name="emp_id" placeholder="الرقم الوظيفي" required>
-        <input type="password" name="password" placeholder="كلمة المرور" required>
-        <button>تسجيل الدخول</button>
-    </form>
+<img src="{{ url_for('static', filename='watermark.jpg') }}" class="logo">
+
+<div class="title">وزارة الكهرباء</div>
+
+<div class="sub">
+قسم الشؤون الإدارية<br>
+محطة كهرباء الشهيد علي سبع
+</div>
+
+<form method="POST">
+<input name="emp_id" placeholder="الرقم الوظيفي" required>
+<input type="password" name="password" placeholder="كلمة المرور" required>
+
+<button>تسجيل الدخول</button>
+</form>
+
+</div>
+
 </div>
 
 </body>
