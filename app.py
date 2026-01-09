@@ -1,12 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import pandas as pd
 from werkzeug.security import check_password_hash, generate_password_hash
+import os
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "secret_key_123"
 
 EXCEL_FILE = "employees.xlsx"
-MASTER_PASSWORD = "123456"
+MASTER_PASSWORD = "123456"   # الباسورد الموحد
 
 def load_data():
     return pd.read_excel(EXCEL_FILE)
@@ -27,7 +29,7 @@ def init_excel():
 
 @app.route("/", methods=["GET","POST"])
 def login():
-    if request.method=="POST":
+    if request.method == "POST":
         emp_id = request.form["emp_id"]
         password = request.form["password"]
 
@@ -56,14 +58,14 @@ def change_password():
     if "emp_id" not in session:
         return redirect(url_for("login"))
 
-    if request.method=="POST":
-        new = request.form["new"]
+    if request.method == "POST":
+        new_pass = request.form["new"]
 
         df = load_data()
-        i = df[df["الرقم الوظيفي"].astype(str)==session["emp_id"]].index[0]
+        idx = df[df["الرقم الوظيفي"].astype(str)==session["emp_id"]].index[0]
 
-        df.loc[i,"password_hash"] = generate_password_hash(new)
-        df.loc[i,"first_login"] = 0
+        df.loc[idx,"password_hash"] = generate_password_hash(new_pass)
+        df.loc[idx,"first_login"] = 0
 
         save_data(df)
         return redirect(url_for("profile"))
@@ -78,15 +80,22 @@ def profile():
     df = load_data()
     user = df[df["الرقم الوظيفي"].astype(str)==session["emp_id"]].iloc[0]
 
-    return render_template("profile.html",
-                           emp_id=session["emp_id"],
-                           data=user)
+    # جلب تاريخ آخر تحديث للملف
+    timestamp = os.path.getmtime(EXCEL_FILE)
+    last_update = datetime.fromtimestamp(timestamp).strftime("%d/%m/%Y - %H:%M")
+
+    return render_template(
+        "profile.html",
+        emp_id=session["emp_id"],
+        data=user,
+        last_update=last_update
+    )
 
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("login"))
 
-if __name__=="__main__":
+if __name__ == "__main__":
     init_excel()
     app.run(debug=True)

@@ -3,94 +3,78 @@
 <head>
 <meta charset="utf-8">
 <title>بيانات الموظف</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&display=swap" rel="stylesheet">
 
 <style>
 body{
     font-family:'Cairo', Tahoma;
+    background:#f2f8ff;
     margin:0;
-    padding:20px;
-    background:#f4f6f8;
+    padding:0;
+}
+
+/* ===== الهيدر ===== */
+.header{
+    background:linear-gradient(135deg,#0b4fa3,#1c6dd0);
+    color:white;
+    padding:25px 15px;
+    text-align:center;
     position:relative;
 }
 
-/* علامة مائية نابضة */
-body::before{
+/* علامة مائية بالهيدر */
+.header::after{
     content:"";
-    position:fixed;
+    position:absolute;
     top:50%;
     left:50%;
     transform:translate(-50%,-50%);
-    width:90%;
-    height:90%;
+    width:70%;
+    height:70%;
     background:url("{{ url_for('static', filename='watermark.jpg') }}") no-repeat center;
     background-size:contain;
     opacity:0.08;
-    z-index:-1;
-    animation:waterPulse 6s infinite;
 }
 
-@keyframes waterPulse{
-    0%{transform:translate(-50%,-50%) scale(1);}
-    50%{transform:translate(-50%,-50%) scale(1.05);}
-    100%{transform:translate(-50%,-50%) scale(1);}
+/* محتوى الهيدر */
+.header-content{
+    position:relative;
+    z-index:2;
 }
 
-/* الهيدر */
-.top-bar{
-    background:linear-gradient(135deg,#0b4fa3,#1c6dd0);
-    border-radius:20px;
-    padding:25px;
-    margin-bottom:20px;
-    text-align:center;
-    color:white;
-    animation:fadeDown 1s ease;
-}
-
-@keyframes fadeDown{
-    from{opacity:0;transform:translateY(-20px);}
-    to{opacity:1;transform:translateY(0);}
-}
-
-/* الشعار دائري */
-.top-bar img{
-    height:95px;
-    width:95px;
+.header img{
+    height:90px;
+    width:90px;
     border-radius:50%;
     background:white;
     padding:6px;
     margin-bottom:10px;
-    animation:pulse 3s infinite;
-}
-
-@keyframes pulse{
-    0%{transform:scale(1);}
-    50%{transform:scale(1.05);}
-    100%{transform:scale(1);}
 }
 
 .welcome{
-    font-size:28px;
-    font-weight:800;
+    font-size:24px;
+    font-weight:900;
 }
 
 .station{
-    font-size:34px;
+    font-size:28px;
     font-weight:900;
+    margin:5px 0;
 }
 
 .dept{
     font-size:18px;
-    opacity:.9;
+    font-weight:700;
+    opacity:.95;
 }
 
-/* كرت المعلومات */
+/* ===== الكرت ===== */
 .card{
     background:#eaf6ff;
-    border-radius:18px;
+    border-radius:15px;
     padding:20px;
+    margin:20px;
 }
 
 table{
@@ -100,98 +84,89 @@ table{
 
 td{
     padding:12px;
-    border-bottom:1px solid #d0e3f5;
+    border-bottom:1px solid #cfe3f5;
 }
 
 .k{
-    width:45%;
     font-weight:bold;
-    color:#083b7c;
+    color:#0b4fa3;
+    width:40%;
 }
 
-/* تنبيه */
-.alert{
+/* آخر تحديث */
+.update{
     margin-top:15px;
     padding:12px;
     border-radius:10px;
     font-weight:bold;
     text-align:center;
-    display:none;
 }
 
-.orange{background:#fff3cd;color:#856404;}
-.red{background:#ffe5e5;color:#b30000;}
-.dark{background:#e0e0e0;color:#333;}
+.new{
+    background:#ffd6d6;
+    color:#b10000;
+    animation:pulse 1.5s infinite;
+}
+
+.old{
+    background:#d7ecff;
+    color:#0b4fa3;
+}
+
+@keyframes pulse{
+    0%{box-shadow:0 0 0 rgba(255,0,0,0.4)}
+    50%{box-shadow:0 0 15px rgba(255,0,0,0.6)}
+    100%{box-shadow:0 0 0 rgba(255,0,0,0.4)}
+}
+
+/* تنبيه */
+.alert{
+    margin-top:10px;
+    background:#b10000;
+    color:white;
+    padding:10px;
+    border-radius:8px;
+    text-align:center;
+    font-weight:bold;
+}
 
 /* روابط */
 .links{
     text-align:center;
-    margin-top:20px;
+    margin:15px 0 25px;
+    font-weight:bold;
 }
 .links a{
-    font-weight:bold;
     text-decoration:none;
     margin:0 10px;
-}
-
-/* آخر تحديث */
-.last-update{
-    margin-top:15px;
-    padding:10px;
-    background:#dff0ff;
-    border-radius:8px;
-    color:#004a7c;
-    font-weight:bold;
-    text-align:center;
-}
-
-/* فوتر */
-.footer{
-    margin-top:25px;
-    text-align:center;
-    font-weight:bold;
-    color:#444;
+    color:#083b7c;
 }
 </style>
 </head>
 
 <body>
 
-<!-- الهيدر -->
-<div class="top-bar">
-
-<img src="{{ url_for('static', filename='watermark.jpg') }}">
-
-<div class="welcome">
-أهلاً وسهلاً بكم
+<!-- ===== الهيدر ===== -->
+<div class="header">
+    <div class="header-content">
+        <img src="{{ url_for('static', filename='watermark.jpg') }}">
+        <div class="welcome">أهلاً وسهلاً بكم</div>
+        <div class="station">محطة كهرباء الشهيد علي سبع</div>
+        <div class="dept">قسم الشؤون الإدارية</div>
+    </div>
 </div>
 
-<div class="station">
-محطة كهرباء الشهيد علي سبع
-</div>
-
-<div class="dept">
-قسم الشؤون الإدارية
-</div>
-
-</div>
-
-<!-- المعلومات -->
+<!-- ===== البيانات ===== -->
 <div class="card">
-<table>
 
+<table>
 <tr><td class="k">الرقم الوظيفي</td><td>{{ emp_id }}</td></tr>
 <tr><td class="k">الاسم الكامل</td><td>{{ data["الاسم الكامل"] }}</td></tr>
 <tr><td class="k">التحصيل الدراسي</td><td>{{ data["التحصيل الدراسي"] }}</td></tr>
 <tr><td class="k">العنوان الوظيفي</td><td>{{ data["العنوان الوظيفي"] }}</td></tr>
 <tr><td class="k">الدرجة الحالية</td><td>{{ data["الدرجة"] }}</td></tr>
 <tr><td class="k">المرحلة الحالية</td><td>{{ data["المرحلة"] }}</td></tr>
-
-<tr>
-<td class="k">تاريخ الاستحقاق القادم</td>
-<td id="dueDate">{{ data["تاريخ الاستحقاق"] }}</td>
-</tr>
-
+<tr><td class="k">تاريخ الاستحقاق القادم</td><td>{{ data["تاريخ الاستحقاق"] }}</td></tr>
 <tr><td class="k">عدد كتب الشكر</td><td>{{ data["عدد كتب الشكر"] }}</td></tr>
 
 {% if data["رقم وتاريخ الكتب"] and data["رقم وتاريخ الكتب"] != "nan" %}
@@ -204,61 +179,24 @@ td{
 {% endif %}
 
 <tr><td class="k">الملاحظات</td><td>{{ data["الملاحظات"] }}</td></tr>
-
 </table>
 
-<div id="alertBox" class="alert"></div>
-
-<div class="last-update">
+<div class="update {% if is_new %}new{% else %}old{% endif %}">
 آخر تحديث من قسم الشؤون الإدارية: {{ last_update }}
 </div>
 
+{% if is_new %}
+<div class="alert">
+⚠ تم تحديث بياناتك اليوم
+</div>
+{% endif %}
+
 <div class="links">
-<a href="{{ url_for('change_password') }}">🔑 تغيير الباسوورد</a> |
+<a href="{{ url_for('change_password') }}">🔑 تغيير الباسورد</a> |
 <a href="{{ url_for('logout') }}">🚪 تسجيل خروج</a>
 </div>
 
 </div>
-
-<!-- صوت -->
-<audio id="alertSound">
-<source src="{{ url_for('static', filename='alert.mp3') }}" type="audio/mpeg">
-</audio>
-
-<div class="footer">
-تصميم: حسين التميمي
-</div>
-
-<script>
-let d=document.getElementById("dueDate").innerText.trim();
-let a=document.getElementById("alertBox");
-let s=document.getElementById("alertSound");
-
-if(d){
-let p=d.split("/");
-let due=new Date(p[2],p[0]-1,p[1]);
-let t=new Date();
-let diff=Math.ceil((due-t)/(1000*60*60*24));
-
-if(diff<=0){
-a.style.display="block";
-a.className="alert dark";
-a.innerHTML="⚫ انتهى موعد الاستحقاق";
-s.play();
-}
-else if(diff<=14){
-a.style.display="block";
-a.className="alert red";
-a.innerHTML="🔴 تبقى "+diff+" يوم على موعد الاستحقاق";
-s.play();
-}
-else if(diff<=30){
-a.style.display="block";
-a.className="alert orange";
-a.innerHTML="🟠 تبقى "+diff+" يوم على موعد الاستحقاق";
-}
-}
-</script>
 
 </body>
 </html>

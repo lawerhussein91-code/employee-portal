@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>تسجيل الدخول</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&display=swap" rel="stylesheet">
 
 <style>
 body{
@@ -19,12 +19,12 @@ body{
 /* الصندوق */
 .box{
     background:white;
-    padding:40px 30px;
-    width:340px;
-    border-radius:22px;
+    padding:45px 35px;
+    width:380px;
+    border-radius:25px;
     text-align:center;
     position:relative;
-    box-shadow:0 20px 35px rgba(0,0,0,.35);
+    box-shadow:0 25px 45px rgba(0,0,0,.35);
 }
 
 /* علامة مائية */
@@ -34,15 +34,15 @@ body{
     top:50%;
     left:50%;
     transform:translate(-50%,-50%);
-    width:75%;
-    height:75%;
+    width:80%;
+    height:80%;
     background:url("{{ url_for('static', filename='watermark.jpg') }}") no-repeat center;
     background-size:contain;
-    opacity:0.12; /* متوسطة */
+    opacity:0.08;
     z-index:0;
 }
 
-/* المحتوى فوق العلامة */
+/* المحتوى */
 .content{
     position:relative;
     z-index:1;
@@ -50,35 +50,55 @@ body{
 
 /* الشعار */
 .logo{
-    height:80px;
+    height:90px;
+    width:90px;
+    border-radius:50%;
+    background:white;
+    padding:6px;
     display:block;
-    margin:0 auto 10px auto;
+    margin:0 auto 12px auto;
+    box-shadow:0 6px 15px rgba(0,0,0,.3);
+    animation:logoMove 3s infinite ease-in-out;
 }
 
-/* العناوين */
+/* حركة الشعار */
+@keyframes logoMove{
+    0%{transform:translateY(0)}
+    50%{transform:translateY(-6px)}
+    100%{transform:translateY(0)}
+}
+
+/* وميض النص */
+@keyframes glow{
+    0%{text-shadow:0 0 5px #1c6dd0}
+    50%{text-shadow:0 0 15px #1c6dd0}
+    100%{text-shadow:0 0 5px #1c6dd0}
+}
+
+/* العنوان */
 .title{
-    font-size:20px;
-    font-weight:700;
-    background:linear-gradient(90deg,#0b4fa3,#1c6dd0);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    margin-bottom:5px;
+    font-size:26px;
+    font-weight:900;
+    color:#0b4fa3;
+    animation:glow 2s infinite;
 }
 
+/* النص الفرعي */
 .sub{
-    font-size:15px;
+    font-size:16px;
     color:#0b4fa3;
-    font-weight:600;
-    line-height:1.7;
-    margin-bottom:18px;
+    font-weight:700;
+    line-height:1.9;
+    margin:12px 0 20px 0;
+    text-shadow:0 1px 4px rgba(0,0,0,.25);
 }
 
 /* الحقول */
 input{
     width:100%;
-    padding:11px;
+    padding:12px;
     margin:10px 0;
-    border-radius:8px;
+    border-radius:9px;
     border:1px solid #bbb;
     font-family:'Cairo';
 }
@@ -86,14 +106,19 @@ input{
 /* الزر */
 button{
     width:100%;
-    padding:11px;
+    padding:12px;
     background:linear-gradient(135deg,#0b4fa3,#1c6dd0);
     color:white;
     border:none;
-    border-radius:8px;
-    font-weight:700;
+    border-radius:9px;
+    font-weight:800;
     cursor:pointer;
     box-shadow:0 6px 0 #083b7c;
+    transition:.2s;
+}
+
+button:hover{
+    transform:scale(1.03);
 }
 
 button:active{
@@ -105,8 +130,12 @@ button:active{
 
 <body>
 
-<div class="box">
+<!-- صوت الضغط -->
+<audio id="clickSound">
+  <source src="{{ url_for('static', filename='click.mp3') }}" type="audio/mpeg">
+</audio>
 
+<div class="box">
 <div class="content">
 
 <img src="{{ url_for('static', filename='watermark.jpg') }}" class="logo">
@@ -114,11 +143,13 @@ button:active{
 <div class="title">وزارة الكهرباء</div>
 
 <div class="sub">
-قسم الشؤون الإدارية<br>
-محطة كهرباء الشهيد علي سبع
+الشركة العامة لإنتاج الطاقة الكهربائية<br>
+المنطقة الوسطى<br>
+محطة الشهيد علي سبع<br>
+قسم الشؤون الإدارية
 </div>
 
-<form method="POST">
+<form method="POST" onsubmit="playSound()">
 <input name="emp_id" placeholder="الرقم الوظيفي" required>
 <input type="password" name="password" placeholder="كلمة المرور" required>
 
@@ -126,8 +157,13 @@ button:active{
 </form>
 
 </div>
-
 </div>
+
+<script>
+function playSound(){
+    document.getElementById("clickSound").play();
+}
+</script>
 
 </body>
 </html>
