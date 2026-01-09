@@ -3,71 +3,130 @@
 <head>
   <meta charset="utf-8">
   <title>بيانات الموظف</title>
+
   <style>
     body{
       font-family:Tahoma;
-      max-width:700px;
+      max-width:800px;
       margin:40px auto;
-      padding:0 12px;
-      text-align:center;
-      background:#f7f7f7;
+      padding:0 15px;
+      background:#f9fafb;
     }
-    .logo{
-      width:120px;
-      opacity:0.15;
-      position:fixed;
-      top:50%;
+
+    .header{
+      text-align:center;
+      margin-bottom:20px;
+      position:relative;
+    }
+
+    .header h2{
+      margin-bottom:10px;
+    }
+
+    /* اللوجو علامة مائية */
+    .watermark{
+      position:absolute;
+      top:60px;
       left:50%;
-      transform:translate(-50%,-50%);
+      transform:translateX(-50%);
+      opacity:0.15;
+      width:220px;
       z-index:-1;
     }
-    .top{
+
+    .actions{
       display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px
+      justify-content:center;
+      gap:10px;
+      margin-bottom:15px;
     }
-    .card{
-      border:1px solid #ddd;
-      border-radius:12px;
-      padding:18px;
-      margin-top:20px;
-      background:#fff;
-      text-align:right;
-    }
-    table{width:100%;border-collapse:collapse}
-    td{padding:10px;border-bottom:1px solid #eee}
-    .k{width:180px;color:#555}
-    a.btn{
-      display:inline-block;
-      padding:10px 12px;
+
+    .btn{
+      padding:8px 14px;
       border:1px solid #ccc;
       border-radius:10px;
-      text-decoration:none
+      text-decoration:none;
+      color:#333;
+      background:white;
     }
-    .footer{
-      margin-top:25px;
-      font-size:14px;
-      color:#555
+
+    .card{
+      background:white;
+      border-radius:15px;
+      padding:20px;
+      box-shadow:0 0 10px rgba(0,0,0,.05);
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+    }
+
+    td{
+      padding:12px;
+      border-bottom:1px solid #eee;
+    }
+
+    .k{
+      width:200px;
+      color:#555;
+      font-weight:bold;
+    }
+
+    .flash{
+      background:#eef5ff;
+      border:1px solid #cfe2ff;
+      padding:10px;
+      border-radius:10px;
+      margin-bottom:15px;
+      text-align:center;
+    }
+
+    /* التوقيع */
+    .signature{
+      text-align:left;
+      margin-top:30px;
+      opacity:0.9;
+    }
+
+    .signature img{
+      width:140px;
+      display:block;
+    }
+
+    .signature span{
+      font-size:13px;
+      color:#555;
     }
   </style>
 </head>
 
 <body>
 
-<img src="{{ url_for('static', filename='logo.png') }}" class="logo">
+<div class="header">
 
-<h3>إدارة محطة كهرباء الشهيد علي سبع</h3>
+  <h2>إدارة محطة كهرباء الشهيد علي سبع</h2>
 
-<div class="top">
-  <b>رقمك الوظيفي: {{ emp_id }}</b>
-  <div>
-    <a class="btn" href="{{ url_for('change_password') }}">تغيير الباسوورد</a>
-    <a class="btn" href="{{ url_for('logout') }}">تسجيل خروج</a>
-  </div>
+  <!-- اللوجو -->
+  <img src="{{ url_for('static', filename='logo.png') }}" class="watermark">
+
 </div>
 
+<div class="actions">
+  <a class="btn" href="{{ url_for('change_password') }}">تغيير الباسوورد</a>
+  <a class="btn" href="{{ url_for('logout') }}">تسجيل خروج</a>
+</div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+  <div class="flash">{{ messages[0] }}</div>
+{% endif %}
+{% endwith %}
+
 <div class="card">
+
+  <h4>رقمك الوظيفي : {{ emp_id }}</h4>
+
   <table>
     <tr><td class="k">الاسم الكامل</td><td>{{ data["الاسم الكامل"] }}</td></tr>
     <tr><td class="k">العنوان الوظيفي</td><td>{{ data["العنوان الوظيفي"] }}</td></tr>
@@ -75,4 +134,16 @@
     <tr><td class="k">المرحلة</td><td>{{ data["المرحلة"] }}</td></tr>
     <tr><td class="k">تاريخ الاستحقاق</td><td>{{ data["تاريخ الاستحقاق"] }}</td></tr>
     <tr><td class="k">عدد كتب الشكر</td><td>{{ data["عدد كتب الشكر"] }}</td></tr>
-    <tr><td cla
+    <tr><td class="k">الملاحظات</td><td>{{ data["الملاحظات"] }}</td></tr>
+  </table>
+
+</div>
+
+<!-- التوقيع -->
+<div class="signature">
+  <img src="{{ url_for('static', filename='sign.png') }}">
+  <span>حسين التميمي</span>
+</div>
+
+</body>
+</html>
