@@ -3,45 +3,41 @@
 <head>
   <meta charset="utf-8">
   <title>بيانات الموظف</title>
-
   <style>
     body{
       font-family:Tahoma;
       max-width:700px;
       margin:40px auto;
       padding:0 12px;
-
-      /* علامة مائية */
-      background:url("/static/logo.png") no-repeat center;
-      background-size:300px;
-      background-attachment:fixed;
+      text-align:center;
+      background:#f7f7f7;
     }
-
+    .logo{
+      width:120px;
+      opacity:0.15;
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      z-index:-1;
+    }
     .top{
       display:flex;
       justify-content:space-between;
       align-items:center;
       gap:10px
     }
-
-    .title{
-      text-align:center;
-      font-weight:bold;
-      margin-bottom:15px;
-    }
-
     .card{
       border:1px solid #ddd;
       border-radius:12px;
       padding:18px;
-      margin-top:12px;
-      background:rgba(255,255,255,0.95);
+      margin-top:20px;
+      background:#fff;
+      text-align:right;
     }
-
     table{width:100%;border-collapse:collapse}
-    td{padding:10px;border-bottom:1px solid #eee;vertical-align:top}
+    td{padding:10px;border-bottom:1px solid #eee}
     .k{width:180px;color:#555}
-
     a.btn{
       display:inline-block;
       padding:10px 12px;
@@ -49,16 +45,34 @@
       border-radius:10px;
       text-decoration:none
     }
-
-    .flash{
-      background:#f4f8ff;
-      border:1px solid #d7e6ff;
-      padding:10px;
-      border-radius:10px;
-      margin-top:12px
+    .footer{
+      margin-top:25px;
+      font-size:14px;
+      color:#555
     }
+  </style>
+</head>
 
-    .signature{
-      position:fixed;
-      bottom:10px;
-      right:20
+<body>
+
+<img src="{{ url_for('static', filename='logo.png') }}" class="logo">
+
+<h3>إدارة محطة كهرباء الشهيد علي سبع</h3>
+
+<div class="top">
+  <b>رقمك الوظيفي: {{ emp_id }}</b>
+  <div>
+    <a class="btn" href="{{ url_for('change_password') }}">تغيير الباسوورد</a>
+    <a class="btn" href="{{ url_for('logout') }}">تسجيل خروج</a>
+  </div>
+</div>
+
+<div class="card">
+  <table>
+    <tr><td class="k">الاسم الكامل</td><td>{{ data["الاسم الكامل"] }}</td></tr>
+    <tr><td class="k">العنوان الوظيفي</td><td>{{ data["العنوان الوظيفي"] }}</td></tr>
+    <tr><td class="k">الدرجة</td><td>{{ data["الدرجة"] }}</td></tr>
+    <tr><td class="k">المرحلة</td><td>{{ data["المرحلة"] }}</td></tr>
+    <tr><td class="k">تاريخ الاستحقاق</td><td>{{ data["تاريخ الاستحقاق"] }}</td></tr>
+    <tr><td class="k">عدد كتب الشكر</td><td>{{ data["عدد كتب الشكر"] }}</td></tr>
+    <tr><td cla
