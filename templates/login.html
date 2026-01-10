@@ -2,129 +2,192 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<title>تسجيل الدخول</title>
+<title>بوابة الموظفين</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap" rel="stylesheet">
 
 <style>
 body{
     margin:0;
-    padding:0;
-    font-family: Tahoma, Arial;
-    background: linear-gradient(135deg,#0d47a1,#1565c0);
+    font-family:'Cairo',Tahoma;
+    background:linear-gradient(-45deg,#0b4fa3,#1c6dd0,#0d47a1,#1565c0);
+    background-size:400% 400%;
+    animation:bgMove 12s ease infinite;
     min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
 }
 
-/* حركة الدخول */
-@keyframes fadeUp{
-    from{opacity:0; transform:translateY(40px);}
-    to{opacity:1; transform:translateY(0);}
+/* خلفية متحركة */
+@keyframes bgMove{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
 }
 
-/* الصندوق */
-.login-box{
-    background:#ffffff;
-    padding:40px;
-    border-radius:22px;
+/* شاشة تحميل */
+#loader{
+position:fixed;
+inset:0;
+background:#0b4fa3;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:999;
+color:white;
+font-size:22px;
+font-weight:bold;
+}
+
+/* الكرت */
+.card{
+    background:#fff;
     width:100%;
-    max-width:560px;
-    text-align:center;
-    box-shadow:0 10px 22px rgba(0,0,0,0.22);
-    animation:fadeUp 0.8s ease;
+    max-width:640px;
+    border-radius:22px;
+    overflow:hidden;
+    position:relative;
+    border:3px solid #1c6dd0;
+    animation:fade .9s ease, pulseGlow 2.5s infinite;
 }
 
-/* الشعار المستطيل (أصغر) */
-.rect-logo{
-    width:200px;   /* صغرناه */
-    max-width:100%;
-    margin-bottom:16px;
+/* توهج نابض */
+@keyframes pulseGlow{
+0%{
+box-shadow:0 0 5px #1c6dd0;
+}
+50%{
+box-shadow:0 0 35px #1c6dd0;
+}
+100%{
+box-shadow:0 0 5px #1c6dd0;
+}
 }
 
-/* العناوين (أكبر + عريض) */
-.gov-text{
-    font-size:21px;
-    font-weight:800;
-    color:#0d47a1;
-    margin:8px 0;
-    text-shadow:1px 1px 1px rgba(0,0,0,0.10);
+/* خلفية مائية */
+.card:before{
+content:"";
+position:absolute;
+inset:0;
+background:url("{{ url_for('static', filename='watermark.jpg') }}") no-repeat center;
+background-size:60%;
+opacity:0.05;
+pointer-events:none;
 }
+
+/* دارك مود */
+@media (prefers-color-scheme: dark){
+body{background:#0e1623;}
+.card{background:#121c2b;color:#fff;}
+input{background:#1c2a40;color:#fff;border-color:#355c8a}
+}
+
+/* حركة دخول */
+@keyframes fade{
+from{opacity:0; transform:translateY(30px)}
+to{opacity:1; transform:translateY(0)}
+}
+
+/* هيدر */
+.header{
+background:linear-gradient(135deg,#0b4fa3,#1c6dd0);
+padding:25px;
+text-align:center;
+color:#fff;
+}
+
+/* شعار */
+.header img{
+width:170px;
+background:#fff;
+padding:8px;
+border-radius:12px;
+margin-bottom:12px;
+animation:float 3s ease-in-out infinite;
+}
+
+@keyframes float{
+0%{transform:translateY(0)}
+50%{transform:translateY(-6px)}
+100%{transform:translateY(0)}
+}
+
+/* عناوين */
+.title{font-size:26px;font-weight:900}
+.sub{font-size:18px;opacity:.95}
+
+/* جسم الفورم */
+.body{padding:35px 30px;text-align:center}
 
 /* الحقول */
-.field{position:relative;}
-
-.login-box input{
-    width:100%;
-    padding:12px;
-    border:1px solid #ccc;
-    border-radius:8px;
-    font-size:15px;
-    margin-bottom:12px;
+input{
+width:100%;
+padding:13px;
+margin:10px 0;
+border-radius:10px;
+border:1px solid #ccc;
 }
 
-/* أيقونة العين */
+/* عين */
+.field{position:relative}
 .eye{
-    position:absolute;
-    left:12px;
-    top:14px;
-    cursor:pointer;
-    font-size:18px;
+position:absolute;
+left:12px;
+top:14px;
+cursor:pointer;
 }
 
 /* زر */
-.login-box button{
-    background:#0d47a1;
-    color:#fff;
-    border:none;
-    padding:12px 38px;
-    border-radius:8px;
-    font-size:16px;
-    font-weight:bold;
-    cursor:pointer;
-}
-.login-box button:hover{
-    background:#1976d2;
+button{
+background:#0b4fa3;
+color:#fff;
+border:none;
+padding:13px 50px;
+border-radius:10px;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
 }
 
-/* الرسائل */
+/* رسائل */
 .msg{
-    padding:12px;
-    border-radius:10px;
-    margin-top:14px;
-    color:#fff;
-    text-align:center;
-    font-size:14px;
-    display:none;
+margin-top:12px;
+padding:10px;
+border-radius:8px;
+font-weight:bold;
+display:none;
 }
+.error{background:#c62828;color:#fff}
 
-/* خطأ */
-.error{
-    background: linear-gradient(135deg,#c62828,#e53935);
-    animation: shake 0.4s;
+/* توقيع */
+.signature{
+text-align:left;
+padding:12px 18px;
+font-size:15px;
+color:#555;
+font-weight:900;
 }
-
-@keyframes shake{
-    0%{transform:translateX(0);}
-    25%{transform:translateX(4px);}
-    50%{transform:translateX(-4px);}
-    75%{transform:translateX(4px);}
-    100%{transform:translateX(0);}
-}
+.signature span{color:#0b4fa3}
 </style>
 </head>
 
 <body>
 
-<div class="login-box">
+<!-- شاشة التحميل -->
+<div id="loader">جارِ التحميل ...</div>
 
-<!-- الشعار -->
-<img src="{{ url_for('static', filename='new_logo.png') }}" class="rect-logo">
+<div class="card">
 
-<!-- العناوين -->
-<div class="gov-text">وزارة الكهرباء</div>
-<div class="gov-text">الشركة العامة للإنتاج – المنطقة الوسطى</div>
-<div class="gov-text">محطة كهرباء الشهيد علي سبع</div>
-<div class="gov-text">قسم الشؤون الإدارية</div>
+<div class="header">
+<img src="{{ url_for('static', filename='new_logo.png') }}">
+<div class="title">وزارة الكهرباء</div>
+<div class="sub">الشركة العامة للإنتاج – المنطقة الوسطى</div>
+<div class="sub">محطة كهرباء الشهيد علي سبع</div>
+<div class="sub">قسم الشؤون الإدارية</div>
+</div>
+
+<div class="body">
 
 <form method="POST" onsubmit="return countTry()">
 
@@ -135,45 +198,104 @@ body{
 <span class="eye" onclick="togglePass()">👁</span>
 </div>
 
-<button>دخول</button>
-
+<button>تسجيل الدخول</button>
 </form>
 
-<!-- رسالة من السيرفر -->
 {% if error %}
-<div class="msg error" style="display:block;">
+<div class="msg error" id="serverMsg" style="display:block">
 ⚠ {{ error }}
 </div>
 {% endif %}
 
-<!-- رسالة من الجافاسكربت -->
 <div class="msg error" id="clientMsg"></div>
 
 </div>
 
+<div class="signature">
+<span>تصميم</span> 👈 <span>حسين التميمي</span>
+</div>
+
+</div>
+
+<!-- صوت -->
+<audio id="alertSound">
+<source src="{{ url_for('static', filename='alert.mp3') }}" type="audio/mpeg">
+</audio>
+
 <script>
-let tries = 3;
+/* اخفاء شاشة التحميل */
+window.onload = ()=>{
+document.getElementById("loader").style.display="none";
+}
+
+/* محاولات */
+let tries=3;
+let lockTime=30; // وقت الحظر
 
 function togglePass(){
-    let x = document.getElementById("pass");
-    x.type = x.type === "password" ? "text" : "password";
+let x=document.getElementById("pass");
+x.type = x.type==="password" ? "text" : "password";
+}
+
+function playSound(){
+document.getElementById("alertSound").play();
+}
+
+function vibrate(){
+if(navigator.vibrate){
+navigator.vibrate([200,100,200]);
+}
 }
 
 function countTry(){
-    tries--;
+if(tries<=0){
+startLock();
+return false;
+}
 
-    if(tries <= 0){
-        document.getElementById("clientMsg").style.display="block";
-        document.getElementById("clientMsg").innerHTML =
-        "تم إيقاف المحاولات مؤقتاً ❌";
-        return false;
-    }
+tries--;
 
-    document.getElementById("clientMsg").style.display="block";
-    document.getElementById("clientMsg").innerHTML =
-    "عدد المحاولات المتبقية: " + tries;
+document.getElementById("clientMsg").style.display="block";
+document.getElementById("clientMsg").innerHTML=
+"عدد المحاولات المتبقية: "+tries;
 
-    return true;
+playSound();
+vibrate();
+
+if(tries<=0){
+startLock();
+}
+
+logFail(); // تسجيل محاولة
+return true;
+}
+
+/* قفل مؤقت */
+function startLock(){
+let btn=document.querySelector("button");
+btn.disabled=true;
+
+let t=lockTime;
+let msg=document.getElementById("clientMsg");
+msg.innerHTML="تم الحظر لمدة "+t+" ثانية";
+
+let timer=setInterval(()=>{
+t--;
+msg.innerHTML="تم الحظر لمدة "+t+" ثانية";
+if(t<=0){
+clearInterval(timer);
+btn.disabled=false;
+tries=3;
+msg.innerHTML="تم فك الحظر يمكنك المحاولة";
+}
+},1000);
+}
+
+/* تسجيل محاولات */
+function logFail(){
+let logs=JSON.parse(localStorage.getItem("fails")||"[]");
+logs.push(new Date().toLocaleString());
+localStorage.setItem("fails",JSON.stringify(logs));
 }
 </script>
 
