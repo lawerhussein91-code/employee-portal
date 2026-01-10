@@ -10,6 +10,9 @@ app.secret_key = "secret_key_123"
 EXCEL_FILE = "employees.xlsx"
 MASTER_PASSWORD = "123456"   # الباسورد الموحد
 
+# =======================
+# تحميل البيانات
+# =======================
 def load_data():
     return pd.read_excel(EXCEL_FILE)
 
@@ -20,13 +23,16 @@ def init_excel():
     df = load_data()
 
     if "password_hash" not in df.columns:
-        df["password_hash"] = generate_password_hash(MASTER_PASSWORD)
+        df["password_hash"] = ""
 
     if "first_login" not in df.columns:
         df["first_login"] = 1
 
     save_data(df)
 
+# =======================
+# تسجيل الدخول (آمن)
+# =======================
 @app.route("/", methods=["GET","POST"])
 def login():
     if request.method == "POST":
@@ -37,12 +43,28 @@ def login():
         user = df[df["الرقم الوظيفي"].astype(str)==emp_id]
 
         if user.empty:
-            return "الرقم الوظيفي غير موجود"
+            return render_template(
+                "login.html",
+                error="الرقم الوظيفي غير موجود"
+            )
 
         row = user.iloc[0]
+        pwd_hash = row["password_hash"]
 
-        if not check_password_hash(row["password_hash"], password):
-            return "كلمة المرور خاطئة"
+        # 🔥 إذا الحقل فاضي أو NaN نولد هاش تلقائي
+        if pd.isna(pwd_hash) or pwd_hash == "":
+            idx = user.index[0]
+            new_hash = generate_password_hash(MASTER_PASSWORD)
+            df.loc[idx,"password_hash"] = new_hash
+            df.loc[idx,"first_login"] = 1
+            save_data(df)
+            pwd_hash = new_hash
+
+        if not check_password_hash(str(pwd_hash), password):
+            return render_template(
+                "login.html",
+                error="كلمة المرور خاطئة"
+            )
 
         session["emp_id"] = emp_id
 
@@ -53,6 +75,9 @@ def login():
 
     return render_template("login.html")
 
+# =======================
+# تغيير كلمة المرور (تحويل مباشر)
+# =======================
 @app.route("/change_password", methods=["GET","POST"])
 def change_password():
     if "emp_id" not in session:
@@ -61,6 +86,13 @@ def change_password():
     if request.method == "POST":
         new_pass = request.form["new"]
 
+        if len(new_pass) < 8:
+            return render_template(
+                "change_password.html",
+                error=True,
+                error_msg="كلمة المرور ضعيفة (اقل من 8 احرف)"
+            )
+
         df = load_data()
         idx = df[df["الرقم الوظيفي"].astype(str)==session["emp_id"]].index[0]
 
@@ -68,10 +100,15 @@ def change_password():
         df.loc[idx,"first_login"] = 0
 
         save_data(df)
+
+        # 🔥 بعد التغيير يوديك مباشرة للمعلومات
         return redirect(url_for("profile"))
 
     return render_template("change_password.html")
 
+# =======================
+# الملف الشخصي
+# =======================
 @app.route("/profile")
 def profile():
     if "emp_id" not in session:
@@ -80,9 +117,9 @@ def profile():
     df = load_data()
     user = df[df["الرقم الوظيفي"].astype(str)==session["emp_id"]].iloc[0]
 
-    # جلب تاريخ آخر تحديث للملف
     timestamp = os.path.getmtime(EXCEL_FILE)
-    last_update = datetime.fromtimestamp(timestamp).strftime("%d/%m/%Y - %H:%M")
+    last_update = datetime.fromtimestamp(timestamp)\
+                    .strftime("%d/%m/%Y - %H:%M")
 
     return render_template(
         "profile.html",
@@ -91,11 +128,17 @@ def profile():
         last_update=last_update
     )
 
+# =======================
+# تسجيل خروج
+# =======================
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("login"))
 
+# =======================
+# تشغيل
+# =======================
 if __name__ == "__main__":
     init_excel()
     app.run(debug=True)

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>لوحة إدارة كلمات المرور</title>
+
+<style>
+body{
+    font-family:Tahoma;
+    background:#f2f6fb;
+}
+
+/* الصندوق */
+.box{
+    background:white;
+    max-width:600px;
+    margin:40px auto;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* العنوان */
+h2{
+    text-align:center;
+    color:#0d47a1;
+}
+
+/* الحقول */
+select,input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:15px;
+}
+
+/* زر */
+button{
+    background:#0d47a1;
+    color:white;
+    border:none;
+    padding:12px;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+    width:100%;
+}
+button:hover{
+    background:#1565c0;
+}
+
+/* الرسائل */
+.msg{
+    margin-top:15px;
+    padding:12px;
+    border-radius:8px;
+    font-weight:bold;
+    text-align:center;
+}
+
+.ok{background:#d4edda;color:#155724}
+.err{background:#f8d7da;color:#721c24}
+
+/* القائمة */
+.list{
+    margin-top:25px;
+    background:#eef5ff;
+    padding:15px;
+    border-radius:10px;
+}
+.list h3{
+    margin:0 0 10px;
+    color:#0d47a1;
+}
+.list ul{
+    padding:0;
+    list-style:none;
+}
+.list li{
+    padding:6px 0;
+    border-bottom:1px solid #ccc;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>لوحة إدارة كلمات المرور</h2>
+
+<form method="POST">
+
+<select name="emp_id" required>
+<option value="">-- اختر الموظف --</option>
+{% for i in employees.itertuples() %}
+<option value="{{ i[1] }}">
+{{ i[1] }} - {{ i[2] }}
+</option>
+{% endfor %}
+</select>
+
+<input type="password" name="new_pass"
+placeholder="كلمة المرور الجديدة" required>
+
+<button>تغيير كلمة المرور</button>
+
+</form>
+
+{% if msg %}
+<div class="msg {% if 'نجاح' in msg %}ok{% else %}err{% endif %}">
+{{ msg }}
+</div>
+{% endif %}
+
+<div class="list">
+<h3>📋 قائمة الموظفين</h3>
+<ul>
+{% for i in employees.itertuples() %}
+<li>{{ i[1] }} - {{ i[2] }}</li>
+{% endfor %}
+</ul>
+</div>
+
+<br>
+<a href="/profile">⬅ رجوع للملف الشخصي</a>
+
+</div>
+
+</body>
+</html>

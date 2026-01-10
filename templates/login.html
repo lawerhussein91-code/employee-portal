@@ -4,164 +4,176 @@
 <meta charset="utf-8">
 <title>تسجيل الدخول</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&display=swap" rel="stylesheet">
-
 <style>
 body{
-    background:linear-gradient(135deg,#0b4fa3,#1c6dd0);
-    height:100vh;
+    margin:0;
+    padding:0;
+    font-family: Tahoma, Arial;
+    background: linear-gradient(135deg,#0d47a1,#1565c0);
+    min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-family:'Cairo', sans-serif;
+}
+
+/* حركة الدخول */
+@keyframes fadeUp{
+    from{opacity:0; transform:translateY(40px);}
+    to{opacity:1; transform:translateY(0);}
 }
 
 /* الصندوق */
-.box{
-    background:white;
-    padding:45px 35px;
-    width:380px;
-    border-radius:25px;
+.login-box{
+    background:#ffffff;
+    padding:40px;
+    border-radius:22px;
+    width:100%;
+    max-width:560px;
     text-align:center;
-    position:relative;
-    box-shadow:0 25px 45px rgba(0,0,0,.35);
+    box-shadow:0 10px 22px rgba(0,0,0,0.22);
+    animation:fadeUp 0.8s ease;
 }
 
-/* علامة مائية */
-.box::before{
-    content:"";
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    width:80%;
-    height:80%;
-    background:url("{{ url_for('static', filename='watermark.jpg') }}") no-repeat center;
-    background-size:contain;
-    opacity:0.08;
-    z-index:0;
+/* الشعار المستطيل (أصغر) */
+.rect-logo{
+    width:200px;   /* صغرناه */
+    max-width:100%;
+    margin-bottom:16px;
 }
 
-/* المحتوى */
-.content{
-    position:relative;
-    z-index:1;
-}
-
-/* الشعار */
-.logo{
-    height:90px;
-    width:90px;
-    border-radius:50%;
-    background:white;
-    padding:6px;
-    display:block;
-    margin:0 auto 12px auto;
-    box-shadow:0 6px 15px rgba(0,0,0,.3);
-    animation:logoMove 3s infinite ease-in-out;
-}
-
-/* حركة الشعار */
-@keyframes logoMove{
-    0%{transform:translateY(0)}
-    50%{transform:translateY(-6px)}
-    100%{transform:translateY(0)}
-}
-
-/* وميض النص */
-@keyframes glow{
-    0%{text-shadow:0 0 5px #1c6dd0}
-    50%{text-shadow:0 0 15px #1c6dd0}
-    100%{text-shadow:0 0 5px #1c6dd0}
-}
-
-/* العنوان */
-.title{
-    font-size:26px;
-    font-weight:900;
-    color:#0b4fa3;
-    animation:glow 2s infinite;
-}
-
-/* النص الفرعي */
-.sub{
-    font-size:16px;
-    color:#0b4fa3;
-    font-weight:700;
-    line-height:1.9;
-    margin:12px 0 20px 0;
-    text-shadow:0 1px 4px rgba(0,0,0,.25);
+/* العناوين (أكبر + عريض) */
+.gov-text{
+    font-size:21px;
+    font-weight:800;
+    color:#0d47a1;
+    margin:8px 0;
+    text-shadow:1px 1px 1px rgba(0,0,0,0.10);
 }
 
 /* الحقول */
-input{
+.field{position:relative;}
+
+.login-box input{
     width:100%;
     padding:12px;
-    margin:10px 0;
-    border-radius:9px;
-    border:1px solid #bbb;
-    font-family:'Cairo';
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:15px;
+    margin-bottom:12px;
 }
 
-/* الزر */
-button{
-    width:100%;
-    padding:12px;
-    background:linear-gradient(135deg,#0b4fa3,#1c6dd0);
-    color:white;
-    border:none;
-    border-radius:9px;
-    font-weight:800;
+/* أيقونة العين */
+.eye{
+    position:absolute;
+    left:12px;
+    top:14px;
     cursor:pointer;
-    box-shadow:0 6px 0 #083b7c;
-    transition:.2s;
+    font-size:18px;
 }
 
-button:hover{
-    transform:scale(1.03);
+/* زر */
+.login-box button{
+    background:#0d47a1;
+    color:#fff;
+    border:none;
+    padding:12px 38px;
+    border-radius:8px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+.login-box button:hover{
+    background:#1976d2;
 }
 
-button:active{
-    transform:translateY(3px);
-    box-shadow:0 3px 0 #083b7c;
+/* الرسائل */
+.msg{
+    padding:12px;
+    border-radius:10px;
+    margin-top:14px;
+    color:#fff;
+    text-align:center;
+    font-size:14px;
+    display:none;
+}
+
+/* خطأ */
+.error{
+    background: linear-gradient(135deg,#c62828,#e53935);
+    animation: shake 0.4s;
+}
+
+@keyframes shake{
+    0%{transform:translateX(0);}
+    25%{transform:translateX(4px);}
+    50%{transform:translateX(-4px);}
+    75%{transform:translateX(4px);}
+    100%{transform:translateX(0);}
 }
 </style>
 </head>
 
 <body>
 
-<!-- صوت الضغط -->
-<audio id="clickSound">
-  <source src="{{ url_for('static', filename='click.mp3') }}" type="audio/mpeg">
-</audio>
+<div class="login-box">
 
-<div class="box">
-<div class="content">
+<!-- الشعار -->
+<img src="{{ url_for('static', filename='new_logo.png') }}" class="rect-logo">
 
-<img src="{{ url_for('static', filename='watermark.jpg') }}" class="logo">
+<!-- العناوين -->
+<div class="gov-text">وزارة الكهرباء</div>
+<div class="gov-text">الشركة العامة للإنتاج – المنطقة الوسطى</div>
+<div class="gov-text">محطة كهرباء الشهيد علي سبع</div>
+<div class="gov-text">قسم الشؤون الإدارية</div>
 
-<div class="title">وزارة الكهرباء</div>
+<form method="POST" onsubmit="return countTry()">
 
-<div class="sub">
-الشركة العامة لإنتاج الطاقة الكهربائية<br>
-المنطقة الوسطى<br>
-محطة الشهيد علي سبع<br>
-قسم الشؤون الإدارية
+<input type="text" name="emp_id" placeholder="الرقم الوظيفي" required>
+
+<div class="field">
+<input type="password" id="pass" name="password" placeholder="كلمة المرور" required>
+<span class="eye" onclick="togglePass()">👁</span>
 </div>
 
-<form method="POST" onsubmit="playSound()">
-<input name="emp_id" placeholder="الرقم الوظيفي" required>
-<input type="password" name="password" placeholder="كلمة المرور" required>
+<button>دخول</button>
 
-<button>تسجيل الدخول</button>
 </form>
 
+<!-- رسالة من السيرفر -->
+{% if error %}
+<div class="msg error" style="display:block;">
+⚠ {{ error }}
 </div>
+{% endif %}
+
+<!-- رسالة من الجافاسكربت -->
+<div class="msg error" id="clientMsg"></div>
+
 </div>
 
 <script>
-function playSound(){
-    document.getElementById("clickSound").play();
+let tries = 3;
+
+function togglePass(){
+    let x = document.getElementById("pass");
+    x.type = x.type === "password" ? "text" : "password";
+}
+
+function countTry(){
+    tries--;
+
+    if(tries <= 0){
+        document.getElementById("clientMsg").style.display="block";
+        document.getElementById("clientMsg").innerHTML =
+        "تم إيقاف المحاولات مؤقتاً ❌";
+        return false;
+    }
+
+    document.getElementById("clientMsg").style.display="block";
+    document.getElementById("clientMsg").innerHTML =
+    "عدد المحاولات المتبقية: " + tries;
+
+    return true;
 }
 </script>
 

@@ -23,20 +23,6 @@ body{
     position:relative;
 }
 
-/* علامة مائية بالهيدر */
-.header::after{
-    content:"";
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    width:70%;
-    height:70%;
-    background:url("{{ url_for('static', filename='watermark.jpg') }}") no-repeat center;
-    background-size:contain;
-    opacity:0.08;
-}
-
 /* محتوى الهيدر */
 .header-content{
     position:relative;
@@ -75,6 +61,29 @@ body{
     border-radius:15px;
     padding:20px;
     margin:20px;
+    position:relative;
+    overflow:hidden;
+}
+
+/* العلامة المائية داخل الكرت */
+.card::before{
+    content:"";
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:65%;
+    height:65%;
+    background:url("{{ url_for('static', filename='watermark.jpg') }}") no-repeat center;
+    background-size:contain;
+    opacity:0.06;   /* شفافية قوية */
+    z-index:0;
+}
+
+/* محتوى الكرت */
+.card *{
+    position:relative;
+    z-index:2;
 }
 
 table{
@@ -149,6 +158,7 @@ td{
 <!-- ===== الهيدر ===== -->
 <div class="header">
     <div class="header-content">
+        <!-- الشعار الطبيعي -->
         <img src="{{ url_for('static', filename='watermark.jpg') }}">
         <div class="welcome">أهلاً وسهلاً بكم</div>
         <div class="station">محطة كهرباء الشهيد علي سبع</div>
