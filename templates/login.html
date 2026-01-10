@@ -4,22 +4,21 @@
 <meta charset="utf-8">
 <title>بوابة الموظفين</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@800;900&display=swap" rel="stylesheet">
 
 <style>
 body{
-    margin:0;
-    font-family:'Cairo',Tahoma;
-    background:linear-gradient(-45deg,#0b4fa3,#1c6dd0,#0d47a1,#1565c0);
-    background-size:400% 400%;
-    animation:bgMove 12s ease infinite;
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+margin:0;
+font-family:'Cairo',Tahoma;
+background:linear-gradient(-45deg,#0b4fa3,#1c6dd0,#0d47a1,#1565c0);
+background-size:400% 400%;
+animation:bgMove 12s ease infinite;
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
 }
 
-/* خلفية متحركة */
 @keyframes bgMove{
 0%{background-position:0% 50%}
 50%{background-position:100% 50%}
@@ -36,33 +35,27 @@ justify-content:center;
 align-items:center;
 z-index:999;
 color:white;
-font-size:22px;
-font-weight:bold;
+font-size:24px;
+font-weight:900;
 }
 
 /* الكرت */
 .card{
-    background:#fff;
-    width:100%;
-    max-width:640px;
-    border-radius:22px;
-    overflow:hidden;
-    position:relative;
-    border:3px solid #1c6dd0;
-    animation:fade .9s ease, pulseGlow 2.5s infinite;
+background:#fff;
+width:100%;
+max-width:660px;
+border-radius:26px;
+overflow:hidden;
+position:relative;
+border:4px solid gold;
+animation:fade .9s ease, pulseGlow 2.5s infinite;
 }
 
-/* توهج نابض */
+/* توهج ذهبي */
 @keyframes pulseGlow{
-0%{
-box-shadow:0 0 5px #1c6dd0;
-}
-50%{
-box-shadow:0 0 35px #1c6dd0;
-}
-100%{
-box-shadow:0 0 5px #1c6dd0;
-}
+0%{box-shadow:0 0 10px gold;}
+50%{box-shadow:0 0 40px gold;}
+100%{box-shadow:0 0 10px gold;}
 }
 
 /* خلفية مائية */
@@ -71,62 +64,77 @@ content:"";
 position:absolute;
 inset:0;
 background:url("{{ url_for('static', filename='watermark.jpg') }}") no-repeat center;
-background-size:60%;
+background-size:55%;
 opacity:0.05;
 pointer-events:none;
 }
 
-/* دارك مود */
-@media (prefers-color-scheme: dark){
-body{background:#0e1623;}
-.card{background:#121c2b;color:#fff;}
-input{background:#1c2a40;color:#fff;border-color:#355c8a}
-}
-
 /* حركة دخول */
 @keyframes fade{
-from{opacity:0; transform:translateY(30px)}
+from{opacity:0; transform:translateY(40px)}
 to{opacity:1; transform:translateY(0)}
 }
 
-/* هيدر */
+/* الهيدر */
 .header{
 background:linear-gradient(135deg,#0b4fa3,#1c6dd0);
-padding:25px;
+padding:30px 20px;
 text-align:center;
 color:#fff;
 }
 
-/* شعار */
+/* شعار الوزارة (بدون دائرة) */
 .header img{
-width:170px;
-background:#fff;
-padding:8px;
-border-radius:12px;
-margin-bottom:12px;
-animation:float 3s ease-in-out infinite;
+width:160px;
+height:auto;
+object-fit:contain;
+background:transparent;
+margin-bottom:15px;
+animation:logoMove 2s ease-in-out infinite;
 }
 
-@keyframes float{
-0%{transform:translateY(0)}
-50%{transform:translateY(-6px)}
-100%{transform:translateY(0)}
+/* حركة قوية للشعار */
+@keyframes logoMove{
+0%{transform:scale(1)}
+50%{transform:scale(1.12)}
+100%{transform:scale(1)}
 }
 
-/* عناوين */
-.title{font-size:26px;font-weight:900}
-.sub{font-size:18px;opacity:.95}
+/* العناوين */
+.title{
+font-size:30px;
+font-weight:900;
+margin:6px 0;
+}
+.sub{
+font-size:21px;
+font-weight:800;
+margin:4px 0;
+opacity:.95;
+}
+
+/* التاريخ */
+.datetime{
+margin-top:8px;
+font-size:15px;
+font-weight:800;
+opacity:.9;
+}
 
 /* جسم الفورم */
-.body{padding:35px 30px;text-align:center}
+.body{
+padding:35px 30px;
+text-align:center;
+}
 
 /* الحقول */
 input{
 width:100%;
-padding:13px;
-margin:10px 0;
+padding:14px;
+margin:12px 0;
 border-radius:10px;
 border:1px solid #ccc;
+font-size:16px;
 }
 
 /* عين */
@@ -134,8 +142,9 @@ border:1px solid #ccc;
 .eye{
 position:absolute;
 left:12px;
-top:14px;
+top:17px;
 cursor:pointer;
+font-size:18px;
 }
 
 /* زر */
@@ -143,28 +152,29 @@ button{
 background:#0b4fa3;
 color:#fff;
 border:none;
-padding:13px 50px;
-border-radius:10px;
-font-size:17px;
-font-weight:bold;
+padding:14px 55px;
+border-radius:12px;
+font-size:18px;
+font-weight:900;
 cursor:pointer;
 }
+button:hover{background:#093b7d}
 
 /* رسائل */
 .msg{
 margin-top:12px;
-padding:10px;
-border-radius:8px;
-font-weight:bold;
+padding:12px;
+border-radius:10px;
+font-weight:900;
 display:none;
 }
 .error{background:#c62828;color:#fff}
 
-/* توقيع */
+/* التوقيع */
 .signature{
 text-align:left;
 padding:12px 18px;
-font-size:15px;
+font-size:16px;
 color:#555;
 font-weight:900;
 }
@@ -174,22 +184,28 @@ font-weight:900;
 
 <body>
 
-<!-- شاشة التحميل -->
 <div id="loader">جارِ التحميل ...</div>
 
 <div class="card">
 
 <div class="header">
-<img src="{{ url_for('static', filename='new_logo.png') }}">
+
+<!-- شعار وزارة الكهرباء -->
+<img src="{{ url_for('static', filename='ministry_logo.png') }}">
+
 <div class="title">وزارة الكهرباء</div>
-<div class="sub">الشركة العامة للإنتاج – المنطقة الوسطى</div>
+<div class="sub">الشركة العامة لإنتاج الطاقة الكهربائية</div>
+<div class="sub">المنطقة الوسطى</div>
 <div class="sub">محطة كهرباء الشهيد علي سبع</div>
 <div class="sub">قسم الشؤون الإدارية</div>
+
+<div class="datetime" id="dt"></div>
+
 </div>
 
 <div class="body">
 
-<form method="POST" onsubmit="return countTry()">
+<form method="POST">
 
 <input type="text" name="emp_id" placeholder="الرقم الوظيفي" required>
 
@@ -202,12 +218,10 @@ font-weight:900;
 </form>
 
 {% if error %}
-<div class="msg error" id="serverMsg" style="display:block">
+<div class="msg error" style="display:block">
 ⚠ {{ error }}
 </div>
 {% endif %}
-
-<div class="msg error" id="clientMsg"></div>
 
 </div>
 
@@ -217,85 +231,23 @@ font-weight:900;
 
 </div>
 
-<!-- صوت -->
-<audio id="alertSound">
-<source src="{{ url_for('static', filename='alert.mp3') }}" type="audio/mpeg">
-</audio>
-
 <script>
-/* اخفاء شاشة التحميل */
 window.onload = ()=>{
 document.getElementById("loader").style.display="none";
+updateTime();
+setInterval(updateTime,1000);
 }
 
-/* محاولات */
-let tries=3;
-let lockTime=30; // وقت الحظر
+/* التاريخ والوقت */
+function updateTime(){
+let d=new Date();
+document.getElementById("dt").innerHTML =
+d.toLocaleDateString("ar-IQ")+" | "+d.toLocaleTimeString("ar-IQ");
+}
 
 function togglePass(){
 let x=document.getElementById("pass");
 x.type = x.type==="password" ? "text" : "password";
-}
-
-function playSound(){
-document.getElementById("alertSound").play();
-}
-
-function vibrate(){
-if(navigator.vibrate){
-navigator.vibrate([200,100,200]);
-}
-}
-
-function countTry(){
-if(tries<=0){
-startLock();
-return false;
-}
-
-tries--;
-
-document.getElementById("clientMsg").style.display="block";
-document.getElementById("clientMsg").innerHTML=
-"عدد المحاولات المتبقية: "+tries;
-
-playSound();
-vibrate();
-
-if(tries<=0){
-startLock();
-}
-
-logFail(); // تسجيل محاولة
-return true;
-}
-
-/* قفل مؤقت */
-function startLock(){
-let btn=document.querySelector("button");
-btn.disabled=true;
-
-let t=lockTime;
-let msg=document.getElementById("clientMsg");
-msg.innerHTML="تم الحظر لمدة "+t+" ثانية";
-
-let timer=setInterval(()=>{
-t--;
-msg.innerHTML="تم الحظر لمدة "+t+" ثانية";
-if(t<=0){
-clearInterval(timer);
-btn.disabled=false;
-tries=3;
-msg.innerHTML="تم فك الحظر يمكنك المحاولة";
-}
-},1000);
-}
-
-/* تسجيل محاولات */
-function logFail(){
-let logs=JSON.parse(localStorage.getItem("fails")||"[]");
-logs.push(new Date().toLocaleString());
-localStorage.setItem("fails",JSON.stringify(logs));
 }
 </script>
 
