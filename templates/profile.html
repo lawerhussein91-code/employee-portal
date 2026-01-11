@@ -23,7 +23,6 @@ body{
     position:relative;
 }
 
-/* محتوى الهيدر */
 .header-content{
     position:relative;
     z-index:2;
@@ -65,7 +64,7 @@ body{
     overflow:hidden;
 }
 
-/* العلامة المائية داخل الكرت */
+/* العلامة المائية */
 .card::before{
     content:"";
     position:absolute;
@@ -76,11 +75,10 @@ body{
     height:65%;
     background:url("{{ url_for('static', filename='watermark.jpg') }}") no-repeat center;
     background-size:contain;
-    opacity:0.06;   /* شفافية قوية */
+    opacity:0.06;
     z-index:0;
 }
 
-/* محتوى الكرت */
 .card *{
     position:relative;
     z-index:2;
@@ -102,43 +100,6 @@ td{
     width:40%;
 }
 
-/* آخر تحديث */
-.update{
-    margin-top:15px;
-    padding:12px;
-    border-radius:10px;
-    font-weight:bold;
-    text-align:center;
-}
-
-.new{
-    background:#ffd6d6;
-    color:#b10000;
-    animation:pulse 1.5s infinite;
-}
-
-.old{
-    background:#d7ecff;
-    color:#0b4fa3;
-}
-
-@keyframes pulse{
-    0%{box-shadow:0 0 0 rgba(255,0,0,0.4)}
-    50%{box-shadow:0 0 15px rgba(255,0,0,0.6)}
-    100%{box-shadow:0 0 0 rgba(255,0,0,0.4)}
-}
-
-/* تنبيه */
-.alert{
-    margin-top:10px;
-    background:#b10000;
-    color:white;
-    padding:10px;
-    border-radius:8px;
-    text-align:center;
-    font-weight:bold;
-}
-
 /* روابط */
 .links{
     text-align:center;
@@ -158,7 +119,6 @@ td{
 <!-- ===== الهيدر ===== -->
 <div class="header">
     <div class="header-content">
-        <!-- الشعار الطبيعي -->
         <img src="{{ url_for('static', filename='watermark.jpg') }}">
         <div class="welcome">أهلاً وسهلاً بكم</div>
         <div class="station">محطة كهرباء الشهيد علي سبع</div>
@@ -176,7 +136,15 @@ td{
 <tr><td class="k">العنوان الوظيفي</td><td>{{ data["العنوان الوظيفي"] }}</td></tr>
 <tr><td class="k">الدرجة الحالية</td><td>{{ data["الدرجة"] }}</td></tr>
 <tr><td class="k">المرحلة الحالية</td><td>{{ data["المرحلة"] }}</td></tr>
-<tr><td class="k">تاريخ الاستحقاق القادم</td><td>{{ data["تاريخ الاستحقاق"] }}</td></tr>
+
+<!-- العبارة الجديدة -->
+<tr>
+<td class="k">
+📅 الاستحقاق القادم وفق الخدمة المدورة وكتب الشكر والإضافات الرسمية
+</td>
+<td>{{ data["تاريخ الاستحقاق"] }}</td>
+</tr>
+
 <tr><td class="k">عدد كتب الشكر</td><td>{{ data["عدد كتب الشكر"] }}</td></tr>
 
 {% if data["رقم وتاريخ الكتب"] and data["رقم وتاريخ الكتب"] != "nan" %}
@@ -191,20 +159,33 @@ td{
 <tr><td class="k">الملاحظات</td><td>{{ data["الملاحظات"] }}</td></tr>
 </table>
 
-<div class="update {% if is_new %}new{% else %}old{% endif %}">
-آخر تحديث من قسم الشؤون الإدارية: {{ last_update }}
-</div>
-
-{% if is_new %}
-<div class="alert">
-⚠ تم تحديث بياناتك اليوم
-</div>
-{% endif %}
-
 <div class="links">
 <a href="{{ url_for('change_password') }}">🔑 تغيير الباسورد</a> |
 <a href="{{ url_for('logout') }}">🚪 تسجيل خروج</a>
 </div>
+
+</div>
+
+<!-- زر التحديث -->
+<div style="text-align:center; margin:25px 0;">
+
+<a href="/refresh" style="text-decoration:none;">
+<button style="
+background:linear-gradient(135deg,#0b4fa3,#1c6dd0);
+color:white;
+border:none;
+padding:14px 40px;
+font-size:18px;
+border-radius:30px;
+cursor:pointer;
+box-shadow:0 4px 10px rgba(0,0,0,0.3);
+transition:0.3s;
+">
+
+🔄 تحديث البيانات
+
+</button>
+</a>
 
 </div>
 
