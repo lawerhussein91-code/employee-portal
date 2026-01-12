@@ -28,9 +28,9 @@ text-align:center
     object-fit:contain;
     background:white;
     padding:10px;
-    border-radius:0;
 }
 
+/* العناوين */
 .station{font-size:26px;font-weight:900}
 .dept{font-size:18px;font-weight:700}
 
@@ -63,6 +63,7 @@ border-radius:10px;
 font-weight:bold
 }
 
+/* تاريخ التحديث */
 .updated{
 margin-top:15px;
 padding:10px;
@@ -73,6 +74,7 @@ font-weight:bold;
 color:#0b4fa3
 }
 
+/* روابط */
 .links{
 text-align:center;
 margin:15px 0;
@@ -99,22 +101,35 @@ color:#083b7c
 
 <table>
 
-<tr><td class="k">الرقم الوظيفي</td><td>{{ emp_id }}</td></tr>
+<tr>
+<td class="k">الرقم الوظيفي</td>
+<td>{{ emp_id }}</td>
+</tr>
 
-<tr><td class="k">الاسم الكامل</td>
-<td>{{ data["الاسم الكامل"] }}</td></tr>
+<tr>
+<td class="k">الاسم الكامل</td>
+<td>{{ data["الاسم الكامل"] }}</td>
+</tr>
 
-<tr><td class="k">التحصيل الدراسي</td>
-<td>{{ data["التحصيل الدراسي"] }}</td></tr>
+<tr>
+<td class="k">التحصيل الدراسي</td>
+<td>{{ data["التحصيل الدراسي"] }}</td>
+</tr>
 
-<tr><td class="k">العنوان الوظيفي</td>
-<td>{{ data["العنوان الوظيفي"] }}</td></tr>
+<tr>
+<td class="k">العنوان الوظيفي</td>
+<td>{{ data["العنوان الوظيفي"] }}</td>
+</tr>
 
-<tr><td class="k">الدرجة الحالية</td>
-<td>{{ data["الدرجة"]|int }}</td></tr>
+<tr>
+<td class="k">الدرجة الحالية</td>
+<td>{{ data["الدرجة"]|int }}</td>
+</tr>
 
-<tr><td class="k">المرحلة الحالية</td>
-<td>{{ data["المرحلة"]|int }}</td></tr>
+<tr>
+<td class="k">المرحلة الحالية</td>
+<td>{{ data["المرحلة"]|int }}</td>
+</tr>
 
 <!-- تاريخ الاستحقاق -->
 <tr>
@@ -138,11 +153,11 @@ color:#083b7c
 <td>{{ data["عدد كتب الشكر"]|int }}</td>
 </tr>
 
-{% if data["رقم وتاريخ الكتب"] and data["رقم وتاريخ الكتب"] != "nan" %}
+{% if data["رقم وتاريخ الكتب"] is not none and data["رقم وتاريخ الكتب"]|string != "nan" %}
 <tr>
 <td class="k">رقم وتاريخ كتب الشكر</td>
 <td style="white-space:pre-line;">
-{{ data["رقم وتاريخ الكتب"].replace("||","\n") }}
+{{ (data["رقم وتاريخ الكتب"] | string).replace("||","\n") }}
 </td>
 </tr>
 {% endif %}
