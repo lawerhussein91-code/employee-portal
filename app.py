@@ -10,7 +10,9 @@ app.secret_key = "secret123"
 # مسار نسبي (مهم للنشر)
 EXCEL_FILE = "master_employees.xlsx"
 
-MASTER_PASSWORD = "123456"
+# 🔐 الباسورد الموحد الجديد
+MASTER_PASSWORD = "1234"
+
 AUTH_FILE = "auth.json"
 
 
