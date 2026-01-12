@@ -1,227 +1,181 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import pandas as pd
 from werkzeug.security import check_password_hash, generate_password_hash
-import os
+import json, os
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = "secret_key_123"
+app.secret_key = "secret123"
 
-# ملف الاكسل
-EXCEL_FILE = "برنامج الترقيات  اضافة ارقام وظيفة.xlsx"
+# مسار نسبي (مهم للنشر)
+EXCEL_FILE = "master_employees.xlsx"
 
 MASTER_PASSWORD = "123456"
+AUTH_FILE = "auth.json"
 
-# =================================
-# تنظيف الرقم الوظيفي
-# =================================
-def normalize_emp_id(x):
-    if pd.isna(x):
-        return ""
-    s = str(x).strip().replace(",", "").replace(" ", "")
-    if s.endswith(".0"):
-        s = s[:-2]
-    try:
-        return str(int(float(s)))
-    except:
-        return s
 
-# =================================
-# تحميل البيانات
-# =================================
+# ================= قراءة البيانات =================
 def load_data():
-    df = pd.read_excel(EXCEL_FILE, dtype=str)
+    try:
+        df = pd.read_excel(EXCEL_FILE)
+    except Exception as e:
+        print("❌ فشل قراءة ملف الاكسل:", e)
+        return None
 
-    # حذف الأعمدة المكررة
-    df = df.loc[:,~df.columns.duplicated()]
+    df.columns = df.columns.str.strip()
 
-    df.columns = df.columns.astype(str).str.strip()
+    # حذف الصفوف الفارغة
+    df = df[df["الرقم الوظيفي"].notna()]
 
-    col = detect_emp_column(df)
-
-    df.rename(columns={col: "الرقم الوظيفي"}, inplace=True)
-    df["الرقم الوظيفي"] = df["الرقم الوظيفي"].apply(normalize_emp_id)
+    # تحويل الرقم الوظيفي لنص بدون .0
+    df["الرقم الوظيفي"] = (
+        df["الرقم الوظيفي"]
+        .astype(float)
+        .astype(int)
+        .astype(str)
+    )
 
     return df
 
-def save_data(df):
-    df.to_excel(EXCEL_FILE, index=False)
 
-# =================================
-# دالة ذكية لاكتشاف العمود
-# =================================
-def detect_emp_column(df):
+# ================= كلمات المرور =================
+def load_auth():
+    if not os.path.exists(AUTH_FILE):
+        return {}
 
-    blocked = [
-        "password","hash","login","first",
-        "must","change","pass"
-    ]
+    with open(AUTH_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-    best_col = None
-    best_score = -1
 
-    for col in df.columns:
+def save_auth(data):
+    with open(AUTH_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
-        col_low = col.lower()
 
-        # تجاهل أعمدة النظام
-        if any(b in col_low for b in blocked):
-            continue
-
-        s = df[col].astype(str).apply(normalize_emp_id)
-        s = s[s != ""]
-
-        if len(s) < 5:
-            continue
-
-        numeric_ratio = (s.str.match(r"^\d+$")).mean()
-        avg_len = s.str.len().mean()
-        long_ratio = (s.str.len() >= 5).mean()
-
-        score = numeric_ratio*0.6 + long_ratio*0.4 + (avg_len/20)
-
-        if score > best_score:
-            best_score = score
-            best_col = col
-
-    if best_col is None:
-        print("\n📌 الأعمدة الموجودة:")
-        for c in df.columns:
-            print("➡", c)
-        raise Exception("❌ لم يتم العثور على عمود الرقم الوظيفي")
-
-    print("✅ تم اختيار عمود الرقم الوظيفي:", best_col)
-    return best_col
-
-# =================================
-# تهيئة الملف
-# =================================
-def init_excel():
-    df = load_data()
-
-    if "password_hash" not in df.columns:
-        df["password_hash"] = ""
-
-    if "first_login" not in df.columns:
-        df["first_login"] = 1
-
-    save_data(df)
-
-# =================================
-# تسجيل الدخول
-# =================================
-@app.route("/", methods=["GET","POST"])
+# ================= تسجيل الدخول =================
+@app.route("/", methods=["GET", "POST"])
 def login():
-    if request.method == "POST":
 
-        emp_id = normalize_emp_id(request.form["emp_id"])
+    if request.method == "POST":
+        emp_id = request.form["emp_id"].strip()
         password = request.form["password"]
 
         df = load_data()
+        if df is None:
+            return "❌ فشل قراءة قاعدة البيانات"
 
-        user = df[df["الرقم الوظيفي"] == emp_id]
+        auth = load_auth()
 
-        if user.empty:
-            return render_template(
-                "login.html",
-                error="⚠ الرقم الوظيفي غير موجود"
-            )
+        if emp_id not in df["الرقم الوظيفي"].values:
+            return render_template("login.html",
+                                   error="الرقم الوظيفي غير موجود")
 
-        row = user.iloc[0]
-        pwd_hash = row["password_hash"]
+        # إنشاء باسورد لأول مرة
+        if emp_id not in auth:
+            auth[emp_id] = {
+                "password_hash": generate_password_hash(
+                    MASTER_PASSWORD,
+                    method="pbkdf2:sha256"
+                ),
+                "first_login": 1
+            }
+            save_auth(auth)
 
-        # أول دخول
-        if pd.isna(pwd_hash) or pwd_hash == "":
-            idx = user.index[0]
-            new_hash = generate_password_hash(MASTER_PASSWORD)
-            df.loc[idx,"password_hash"] = new_hash
-            df.loc[idx,"first_login"] = 1
-            save_data(df)
-            pwd_hash = new_hash
+        user = auth[emp_id]
 
-        if not check_password_hash(str(pwd_hash), password):
-            return render_template(
-                "login.html",
-                error="كلمة المرور خاطئة"
-            )
+        if not check_password_hash(user["password_hash"], password):
+            return render_template("login.html",
+                                   error="كلمة المرور خاطئة")
 
         session["emp_id"] = emp_id
 
-        if int(row["first_login"]) == 1:
+        if user["first_login"] == 1:
             return redirect(url_for("change_password"))
 
         return redirect(url_for("profile"))
 
     return render_template("login.html")
 
-# =================================
-# تغيير كلمة المرور
-# =================================
-@app.route("/change_password", methods=["GET","POST"])
+
+# ================= تغيير كلمة المرور =================
+@app.route("/change_password", methods=["GET", "POST"])
 def change_password():
+
     if "emp_id" not in session:
         return redirect(url_for("login"))
 
     if request.method == "POST":
+        new = request.form["new"]
+        confirm = request.form["confirm"]
 
-        new_pass = request.form["new"]
+        if new != confirm:
+            return render_template("change_password.html",
+                                   error=True,
+                                   error_msg="كلمتا المرور غير متطابقتين")
 
-        if len(new_pass) < 8:
-            return render_template(
-                "change_password.html",
-                error=True,
-                error_msg="كلمة المرور ضعيفة (اقل من 8 احرف)"
-            )
+        if len(new) < 8:
+            return render_template("change_password.html",
+                                   error=True,
+                                   error_msg="كلمة المرور ضعيفة (اقل من 8 احرف)")
 
-        df = load_data()
-        idx = df[
-            df["الرقم الوظيفي"]==session["emp_id"]
-        ].index[0]
+        auth = load_auth()
+        emp_id = session["emp_id"]
 
-        df.loc[idx,"password_hash"] = generate_password_hash(new_pass)
-        df.loc[idx,"first_login"] = 0
-
-        save_data(df)
+        auth[emp_id]["password_hash"] = generate_password_hash(
+            new,
+            method="pbkdf2:sha256"
+        )
+        auth[emp_id]["first_login"] = 0
+        save_auth(auth)
 
         return redirect(url_for("profile"))
 
     return render_template("change_password.html")
 
-# =================================
-# الملف الشخصي
-# =================================
+
+# ================= الملف الشخصي =================
 @app.route("/profile")
 def profile():
+
     if "emp_id" not in session:
         return redirect(url_for("login"))
 
     df = load_data()
-    user = df[
-        df["الرقم الوظيفي"]==session["emp_id"]
-    ].iloc[0]
+    if df is None:
+        return "❌ فشل قراءة البيانات"
 
-    timestamp = os.path.getmtime(EXCEL_FILE)
-    last_update = datetime.fromtimestamp(timestamp)\
-                    .strftime("%d/%m/%Y - %H:%M")
+    user = df[df["الرقم الوظيفي"] == session["emp_id"]].iloc[0]
+
+    # تنسيق تاريخ الاستحقاق
+    date_val = user["تاريخ الاستحقاق"]
+
+    if pd.notna(date_val):
+        try:
+            formatted_date = date_val.strftime("%Y-%m-%d")
+        except:
+            formatted_date = str(date_val)
+    else:
+        formatted_date = "غير محدد"
+
+    last_update = datetime.now().strftime("%d/%m/%Y - %H:%M")
 
     return render_template(
         "profile.html",
         emp_id=session["emp_id"],
         data=user,
+        formatted_date=formatted_date,
         last_update=last_update
     )
 
-# =================================
-# تسجيل خروج
-# =================================
+
+# ================= تسجيل خروج =================
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("login"))
 
-# =================================
-# تشغيل
-# =================================
+
+# ================= تشغيل =================
 if __name__ == "__main__":
-    init_excel()
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)

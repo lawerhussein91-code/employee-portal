@@ -8,184 +8,160 @@
 
 <style>
 body{
-    font-family:'Cairo', Tahoma;
-    background:#f2f8ff;
-    margin:0;
-    padding:0;
+font-family:'Cairo',Tahoma;
+background:#f2f8ff;
+margin:0
 }
 
-/* ===== الهيدر ===== */
+/* الهيدر */
 .header{
-    background:linear-gradient(135deg,#0b4fa3,#1c6dd0);
-    color:white;
-    padding:25px 15px;
-    text-align:center;
-    position:relative;
+background:linear-gradient(135deg,#0b4fa3,#1c6dd0);
+color:white;
+padding:25px 15px;
+text-align:center
 }
 
-.header-content{
-    position:relative;
-    z-index:2;
-}
-
+/* الشعار بدون تكسر */
 .header img{
-    height:90px;
-    width:90px;
-    border-radius:50%;
+    max-width:180px;
+    height:auto;
+    object-fit:contain;
     background:white;
-    padding:6px;
-    margin-bottom:10px;
+    padding:10px;
+    border-radius:0;
 }
 
-.welcome{
-    font-size:24px;
-    font-weight:900;
-}
+.station{font-size:26px;font-weight:900}
+.dept{font-size:18px;font-weight:700}
 
-.station{
-    font-size:28px;
-    font-weight:900;
-    margin:5px 0;
-}
-
-.dept{
-    font-size:18px;
-    font-weight:700;
-    opacity:.95;
-}
-
-/* ===== الكرت ===== */
+/* الكرت */
 .card{
-    background:#eaf6ff;
-    border-radius:15px;
-    padding:20px;
-    margin:20px;
-    position:relative;
-    overflow:hidden;
+background:#eaf6ff;
+border-radius:15px;
+padding:20px;
+margin:20px
 }
 
-/* العلامة المائية */
-.card::before{
-    content:"";
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    width:65%;
-    height:65%;
-    background:url("{{ url_for('static', filename='watermark.jpg') }}") no-repeat center;
-    background-size:contain;
-    opacity:0.06;
-    z-index:0;
-}
-
-.card *{
-    position:relative;
-    z-index:2;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
+table{width:100%;border-collapse:collapse}
 
 td{
-    padding:12px;
-    border-bottom:1px solid #cfe3f5;
+padding:12px;
+border-bottom:1px solid #cfe3f5
 }
 
 .k{
-    font-weight:bold;
-    color:#0b4fa3;
-    width:40%;
+font-weight:bold;
+color:#0b4fa3;
+width:40%
 }
 
-/* روابط */
-.links{
-    text-align:center;
-    margin:15px 0 25px;
-    font-weight:bold;
+/* صندوق الاستحقاق */
+.box{
+background:#d7ecff;
+padding:12px;
+border-radius:10px;
+font-weight:bold
 }
+
+.updated{
+margin-top:15px;
+padding:10px;
+border-radius:10px;
+background:#e1f0ff;
+text-align:center;
+font-weight:bold;
+color:#0b4fa3
+}
+
+.links{
+text-align:center;
+margin:15px 0;
+font-weight:bold
+}
+
 .links a{
-    text-decoration:none;
-    margin:0 10px;
-    color:#083b7c;
+text-decoration:none;
+margin:0 10px;
+color:#083b7c
 }
 </style>
 </head>
 
 <body>
 
-<!-- ===== الهيدر ===== -->
 <div class="header">
-    <div class="header-content">
-        <img src="{{ url_for('static', filename='watermark.jpg') }}">
-        <div class="welcome">أهلاً وسهلاً بكم</div>
-        <div class="station">محطة كهرباء الشهيد علي سبع</div>
-        <div class="dept">قسم الشؤون الإدارية</div>
-    </div>
+<img src="{{ url_for('static', filename='new_logo.png') }}">
+<div class="station">محطة كهرباء الشهيد علي سبع</div>
+<div class="dept">قسم الشؤون الإدارية</div>
 </div>
 
-<!-- ===== البيانات ===== -->
 <div class="card">
 
 <table>
-<tr><td class="k">الرقم الوظيفي</td><td>{{ emp_id }}</td></tr>
-<tr><td class="k">الاسم الكامل</td><td>{{ data["الاسم الكامل"] }}</td></tr>
-<tr><td class="k">التحصيل الدراسي</td><td>{{ data["التحصيل الدراسي"] }}</td></tr>
-<tr><td class="k">العنوان الوظيفي</td><td>{{ data["العنوان الوظيفي"] }}</td></tr>
-<tr><td class="k">الدرجة الحالية</td><td>{{ data["الدرجة"] }}</td></tr>
-<tr><td class="k">المرحلة الحالية</td><td>{{ data["المرحلة"] }}</td></tr>
 
-<!-- العبارة الجديدة -->
+<tr><td class="k">الرقم الوظيفي</td><td>{{ emp_id }}</td></tr>
+
+<tr><td class="k">الاسم الكامل</td>
+<td>{{ data["الاسم الكامل"] }}</td></tr>
+
+<tr><td class="k">التحصيل الدراسي</td>
+<td>{{ data["التحصيل الدراسي"] }}</td></tr>
+
+<tr><td class="k">العنوان الوظيفي</td>
+<td>{{ data["العنوان الوظيفي"] }}</td></tr>
+
+<tr><td class="k">الدرجة الحالية</td>
+<td>{{ data["الدرجة"]|int }}</td></tr>
+
+<tr><td class="k">المرحلة الحالية</td>
+<td>{{ data["المرحلة"]|int }}</td></tr>
+
+<!-- تاريخ الاستحقاق -->
 <tr>
-<td class="k">
-📅 الاستحقاق القادم وفق الخدمة المدورة وكتب الشكر والإضافات الرسمية
+<td class="k">تاريخ الاستحقاق القادم</td>
+<td>
+<div class="box">
+📅 {{ formatted_date }}
+
+<div style="margin-top:6px;font-size:13px;color:#083b7c">
+✔ بعد إضافة كتب الشكر  
+✔ الخدمة المدوّرة  
+✔ جميع الخدمات الرسمية  
+</div>
+
+</div>
 </td>
-<td>{{ data["تاريخ الاستحقاق"] }}</td>
 </tr>
 
-<tr><td class="k">عدد كتب الشكر</td><td>{{ data["عدد كتب الشكر"] }}</td></tr>
+<tr>
+<td class="k">عدد كتب الشكر</td>
+<td>{{ data["عدد كتب الشكر"]|int }}</td>
+</tr>
 
 {% if data["رقم وتاريخ الكتب"] and data["رقم وتاريخ الكتب"] != "nan" %}
 <tr>
 <td class="k">رقم وتاريخ كتب الشكر</td>
 <td style="white-space:pre-line;">
-{{ data["رقم وتاريخ الكتب"].replace("||", "\n") }}
+{{ data["رقم وتاريخ الكتب"].replace("||","\n") }}
 </td>
 </tr>
 {% endif %}
 
-<tr><td class="k">الملاحظات</td><td>{{ data["الملاحظات"] }}</td></tr>
+<tr>
+<td class="k">الملاحظات</td>
+<td>{{ data["الملاحظات"] }}</td>
+</tr>
+
 </table>
+
+<div class="updated">
+تم التحديث في: {{ last_update }}
+</div>
 
 <div class="links">
 <a href="{{ url_for('change_password') }}">🔑 تغيير الباسورد</a> |
 <a href="{{ url_for('logout') }}">🚪 تسجيل خروج</a>
 </div>
-
-</div>
-
-<!-- زر التحديث -->
-<div style="text-align:center; margin:25px 0;">
-
-<a href="/refresh" style="text-decoration:none;">
-<button style="
-background:linear-gradient(135deg,#0b4fa3,#1c6dd0);
-color:white;
-border:none;
-padding:14px 40px;
-font-size:18px;
-border-radius:30px;
-cursor:pointer;
-box-shadow:0 4px 10px rgba(0,0,0,0.3);
-transition:0.3s;
-">
-
-🔄 تحديث البيانات
-
-</button>
-</a>
 
 </div>
 
