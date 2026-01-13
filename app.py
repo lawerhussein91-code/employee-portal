@@ -7,37 +7,51 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = "secret123"
 
-# مسار نسبي (مهم للنشر)
 EXCEL_FILE = "master_employees.xlsx"
-
-# 🔐 الباسورد الموحد الجديد
 MASTER_PASSWORD = "1234"
-
 AUTH_FILE = "auth.json"
+
+# ====== كاش للبيانات ======
+DATA_CACHE = None
 
 
 # ================= قراءة البيانات =================
 def load_data():
+    global DATA_CACHE
+
+    # اذا موجودة بالكاش نرجعها مباشرة
+    if DATA_CACHE is not None:
+        return DATA_CACHE
+
     try:
         df = pd.read_excel(EXCEL_FILE)
+
+        df.columns = df.columns.str.strip()
+        df = df[df["الرقم الوظيفي"].notna()]
+
+        df["الرقم الوظيفي"] = (
+            df["الرقم الوظيفي"]
+            .astype(float)
+            .astype(int)
+            .astype(str)
+        )
+
+        # نخزنها بالكاش
+        DATA_CACHE = df
+        return df
+
     except Exception as e:
         print("❌ فشل قراءة ملف الاكسل:", e)
         return None
 
-    df.columns = df.columns.str.strip()
 
-    # حذف الصفوف الفارغة
-    df = df[df["الرقم الوظيفي"].notna()]
-
-    # تحويل الرقم الوظيفي لنص بدون .0
-    df["الرقم الوظيفي"] = (
-        df["الرقم الوظيفي"]
-        .astype(float)
-        .astype(int)
-        .astype(str)
-    )
-
-    return df
+# ================= تحديث الكاش يدوياً =================
+@app.route("/refresh")
+def refresh_cache():
+    global DATA_CACHE
+    DATA_CACHE = None
+    load_data()
+    return "✅ تم تحديث البيانات بنجاح"
 
 
 # ================= كلمات المرور =================
@@ -45,8 +59,11 @@ def load_auth():
     if not os.path.exists(AUTH_FILE):
         return {}
 
-    with open(AUTH_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(AUTH_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except:
+        return {}
 
 
 def save_auth(data):
@@ -72,7 +89,7 @@ def login():
             return render_template("login.html",
                                    error="الرقم الوظيفي غير موجود")
 
-        # إنشاء باسورد لأول مرة
+        # أول دخول
         if emp_id not in auth:
             auth[emp_id] = {
                 "password_hash": generate_password_hash(
@@ -99,6 +116,12 @@ def login():
     return render_template("login.html")
 
 
+# ================= نسيت كلمة المرور =================
+@app.route("/forgot")
+def forgot():
+    return render_template("forgot.html")
+
+
 # ================= تغيير كلمة المرور =================
 @app.route("/change_password", methods=["GET", "POST"])
 def change_password():
@@ -115,10 +138,15 @@ def change_password():
                                    error=True,
                                    error_msg="كلمتا المرور غير متطابقتين")
 
-        if len(new) < 8:
+        if not new.isdigit():
             return render_template("change_password.html",
                                    error=True,
-                                   error_msg="كلمة المرور ضعيفة (اقل من 8 احرف)")
+                                   error_msg="كلمة المرور يجب ان تكون ارقام فقط")
+
+        if len(new) < 4:
+            return render_template("change_password.html",
+                                   error=True,
+                                   error_msg="كلمة المرور يجب ان تكون 4 ارقام")
 
         auth = load_auth()
         emp_id = session["emp_id"]
@@ -148,7 +176,6 @@ def profile():
 
     user = df[df["الرقم الوظيفي"] == session["emp_id"]].iloc[0]
 
-    # تنسيق تاريخ الاستحقاق
     date_val = user["تاريخ الاستحقاق"]
 
     if pd.notna(date_val):
@@ -170,6 +197,29 @@ def profile():
     )
 
 
+# ================= إعادة تعيين باسورد موظف =================
+@app.route("/admin_reset/<emp_id>")
+def admin_reset(emp_id):
+
+    auth = load_auth()
+
+    if emp_id not in auth:
+        return "❌ الموظف غير موجود"
+
+    auth[emp_id]["password_hash"] = generate_password_hash(
+        MASTER_PASSWORD,
+        method="pbkdf2:sha256"
+    )
+    auth[emp_id]["first_login"] = 1
+    save_auth(auth)
+
+    return f"""
+    ✅ تم إعادة تعيين كلمة المرور للموظف {emp_id}<br>
+    الباسورد الجديد: 1234<br>
+    سيتم إجباره على تغييرها عند الدخول
+    """
+
+
 # ================= تسجيل خروج =================
 @app.route("/logout")
 def logout():
@@ -177,7 +227,13 @@ def logout():
     return redirect(url_for("login"))
 
 
+# ================= فحص السيرفر =================
+@app.route("/ping")
+def ping():
+    return "OK"
+
+
 # ================= تشغيل =================
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port, debug=False)

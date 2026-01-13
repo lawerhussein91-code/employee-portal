@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>برنامج الترقيات والعلاوات</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container fade-in">
+
+<!-- الخلفية -->
+<img src="static/bg.jpg" class="bg">
+
+<div class="content">
+
+<!-- اللوغو -->
+<img src="static/ministry_logo.png" class="logo">
+
+<h1>وزارة الكهرباء</h1>
+
+<h2>
+الشركة العامة لإنتاج الطاقة الكهربائية<br>
+المنطقة الوسطى<br>
+محطة كهرباء الشهيد علي سبع<br>
+قسم الشؤون الإدارية
+</h2>
+
+<div class="gold-title">
+برنامج الترقيات والعلاوات
+</div>
+
+<div class="date" id="date"></div>
+
+<button class="pdf-btn" onclick="window.print()">
+تحميل نسخة PDF
+</button>
+
+<div class="footer">
+تصميم: حسين التميمي
+</div>
+
+</div>
+</div>
+
+<script>
+const today = new Date();
+const options = { year: 'numeric', month: 'long', day: 'numeric' };
+document.getElementById("date").innerHTML =
+"التاريخ: " + today.toLocaleDateString('ar-IQ', options);
+</script>
+
+</body>
+</html>

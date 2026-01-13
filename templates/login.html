@@ -1,254 +1,294 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<title>بوابة الموظفين</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@800;900&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<title>تسجيل الدخول</title>
 
 <style>
 body{
 margin:0;
-font-family:'Cairo',Tahoma;
-background:linear-gradient(-45deg,#0b4fa3,#1c6dd0,#0d47a1,#1565c0);
-background-size:400% 400%;
-animation:bgMove 12s ease infinite;
-min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
+font-family:Tahoma;
+background:#000;
 }
 
-@keyframes bgMove{
-0%{background-position:0% 50%}
-50%{background-position:100% 50%}
-100%{background-position:0% 50%}
-}
-
-/* شاشة تحميل */
+/* لودر البداية */
 #loader{
 position:fixed;
-inset:0;
-background:#0b4fa3;
-display:flex;
-justify-content:center;
-align-items:center;
-z-index:999;
-color:white;
-font-size:24px;
-font-weight:900;
-}
-
-/* الكرت */
-.card{
-background:#fff;
+top:0;
+left:0;
 width:100%;
-max-width:660px;
-border-radius:26px;
-overflow:hidden;
+height:100%;
+background:#000;
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+color:#00c6ff;
+font-size:22px;
+}
+
+/* شاشة يرجى الانتظار */
+#wait{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(255,255,255,0.85);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:9998;
+}
+
+#wait .box{
+background:white;
+padding:22px 35px;
+border-radius:12px;
+text-align:center;
+font-size:18px;
+font-weight:bold;
+color:#0b4fa3;
+box-shadow:0 0 15px rgba(0,0,0,.2);
+}
+
+/* الهيكل */
+.wrapper{
 position:relative;
-border:4px solid gold;
-animation:fade .9s ease, pulseGlow 2.5s infinite;
+width:100%;
+height:100vh;
+overflow:hidden;
 }
 
-/* توهج ذهبي */
-@keyframes pulseGlow{
-0%{box-shadow:0 0 10px gold;}
-50%{box-shadow:0 0 40px gold;}
-100%{box-shadow:0 0 10px gold;}
-}
-
-/* خلفية مائية */
-.card:before{
-content:"";
+.bg{
 position:absolute;
-inset:0;
-background:url("{{ url_for('static', filename='watermark.jpg') }}") no-repeat center;
-background-size:55%;
-opacity:0.05;
-pointer-events:none;
+width:100%;
+height:100%;
+object-fit:cover;
+filter:brightness(1);
 }
 
-/* حركة دخول */
+/* الطبقة */
+.overlay{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.25);
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+color:white;
+text-align:center;
+padding:20px;
+animation:fade 1s ease;
+}
+
 @keyframes fade{
-from{opacity:0; transform:translateY(40px)}
-to{opacity:1; transform:translateY(0)}
+from{opacity:0;transform:translateY(30px);}
+to{opacity:1;transform:translateY(0);}
 }
 
-/* الهيدر */
-.header{
-background:linear-gradient(135deg,#0b4fa3,#1c6dd0);
-padding:30px 20px;
-text-align:center;
-color:#fff;
+/* النص */
+h1{font-size:34px;margin:10px;}
+h2{font-size:18px;line-height:1.8;}
+
+.gold{
+margin:15px 0;
+font-size:28px;
+font-weight:bold;
+color:#ffd700;
+text-shadow:0 0 12px #ffd700;
 }
 
-/* شعار الوزارة (بدون دائرة) */
-.header img{
-width:160px;
-height:auto;
-object-fit:contain;
-background:transparent;
-margin-bottom:15px;
-animation:logoMove 2s ease-in-out infinite;
+/* صورة متحركة */
+.move-img{
+width:80px;
+margin:10px;
+animation:float 2s ease-in-out infinite;
 }
 
-/* حركة قوية للشعار */
-@keyframes logoMove{
-0%{transform:scale(1)}
-50%{transform:scale(1.12)}
-100%{transform:scale(1)}
+@keyframes float{
+0%{transform:translateY(0);}
+50%{transform:translateY(-10px);}
+100%{transform:translateY(0);}
 }
 
-/* العناوين */
-.title{
-font-size:30px;
-font-weight:900;
-margin:6px 0;
-}
-.sub{
-font-size:21px;
-font-weight:800;
-margin:4px 0;
-opacity:.95;
+/* الفورم */
+.form-box{
+background:rgba(0,0,0,0.6);
+padding:25px;
+border-radius:18px;
+width:100%;
+max-width:330px;
+box-shadow:0 0 20px rgba(0,0,0,.6);
 }
 
-/* التاريخ */
-.datetime{
-margin-top:8px;
-font-size:15px;
-font-weight:800;
-opacity:.9;
-}
-
-/* جسم الفورم */
-.body{
-padding:35px 30px;
-text-align:center;
-}
-
-/* الحقول */
 input{
 width:100%;
-padding:14px;
-margin:12px 0;
-border-radius:10px;
-border:1px solid #ccc;
+padding:12px;
+margin:10px 0;
+border:none;
+border-radius:8px;
 font-size:16px;
 }
 
-/* عين */
-.field{position:relative}
+/* الباسورد */
+.pass-box{
+position:relative;
+}
+
 .eye{
 position:absolute;
-left:12px;
-top:17px;
+top:50%;
+left:10px;
+transform:translateY(-50%);
 cursor:pointer;
+color:#000;
 font-size:18px;
 }
 
-/* زر */
+/* زر الدخول */
 button{
-background:#0b4fa3;
-color:#fff;
-border:none;
-padding:14px 55px;
-border-radius:12px;
-font-size:18px;
-font-weight:900;
-cursor:pointer;
-}
-button:hover{background:#093b7d}
-
-/* رسائل */
-.msg{
-margin-top:12px;
+width:100%;
 padding:12px;
-border-radius:10px;
-font-weight:900;
-display:none;
+background:linear-gradient(45deg,#00c6ff,#0072ff);
+border:none;
+border-radius:8px;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+color:white;
+box-shadow:0 0 15px #00c6ff;
 }
-.error{background:#c62828;color:#fff}
+
+button:hover{
+box-shadow:0 0 30px #00c6ff;
+}
+
+/* رسالة خطأ */
+.error{
+background:#b00020;
+padding:8px;
+border-radius:6px;
+margin-bottom:10px;
+font-size:14px;
+}
+
+/* نسيت كلمة المرور */
+.forgot{
+margin-top:10px;
+font-size:14px;
+color:#00c6ff;
+text-decoration:none;
+display:block;
+}
 
 /* التوقيع */
-.signature{
-text-align:left;
-padding:12px 18px;
-font-size:16px;
-color:#555;
-font-weight:900;
+.footer{
+margin-top:15px;
+font-size:13px;
+color:#ddd;
 }
-.signature span{color:#0b4fa3}
+
+/* موبايل */
+@media(max-width:600px){
+h1{font-size:26px;}
+h2{font-size:15px;}
+.gold{font-size:22px;}
+}
 </style>
 </head>
 
 <body>
 
-<div id="loader">جارِ التحميل ...</div>
-
-<div class="card">
-
-<div class="header">
-
-<!-- شعار وزارة الكهرباء -->
-<img src="{{ url_for('static', filename='ministry_logo.png') }}">
-
-<div class="title">وزارة الكهرباء</div>
-<div class="sub">الشركة العامة لإنتاج الطاقة الكهربائية</div>
-<div class="sub">المنطقة الوسطى</div>
-<div class="sub">محطة كهرباء الشهيد علي سبع</div>
-<div class="sub">قسم الشؤون الإدارية</div>
-
-<div class="datetime" id="dt"></div>
-
+<!-- لودر البداية -->
+<div id="loader">
+جارِ التحميل...
 </div>
 
-<div class="body">
+<!-- شاشة الانتظار -->
+<div id="wait">
+  <div class="box">
+    ⏳
+    <div>يرجى الانتظار</div>
+  </div>
+</div>
+
+<!-- صوت -->
+<audio id="sound" src="/static/welcome.mp3"></audio>
+
+<div class="wrapper">
+
+<img src="/static/bg.jpg" class="bg">
+
+<div class="overlay">
+
+<h1>وزارة الكهرباء</h1>
+
+<h2>
+الشركة العامة لإنتاج الطاقة الكهربائية<br>
+المنطقة الوسطى<br>
+محطة كهرباء الشهيد علي سبع<br>
+قسم الشؤون الإدارية
+</h2>
+
+<div class="gold">
+برنامج الترقيات والعلاوات
+</div>
+
+<!-- صورة متحركة -->
+<img src="/static/new_logo.png" class="move-img">
+
+<div class="form-box">
+
+{% if error %}
+<div class="error">{{ error }}</div>
+{% endif %}
 
 <form method="POST">
 
 <input type="text" name="emp_id" placeholder="الرقم الوظيفي" required>
 
-<div class="field">
-<input type="password" id="pass" name="password" placeholder="كلمة المرور" required>
-<span class="eye" onclick="togglePass()">👁</span>
+<div class="pass-box">
+<input type="password" name="password" id="pass" placeholder="كلمة المرور" required>
+<span class="eye" onclick="toggle()">👁</span>
 </div>
 
-<button>تسجيل الدخول</button>
+<button type="submit">تسجيل الدخول</button>
+
+<a href="/forgot" class="forgot">نسيت كلمة المرور؟</a>
+
 </form>
 
-{% if error %}
-<div class="msg error" style="display:block">
-⚠ {{ error }}
-</div>
-{% endif %}
-
 </div>
 
-<div class="signature">
-<span>تصميم</span> 👈 <span>حسين التميمي</span>
+<div class="footer">
+تصميم: حسين التميمي
 </div>
 
+</div>
 </div>
 
 <script>
-window.onload = ()=>{
+/* اخفاء لودر البداية + تشغيل الصوت */
+window.onload = function(){
 document.getElementById("loader").style.display="none";
-updateTime();
-setInterval(updateTime,1000);
+document.getElementById("sound").play();
 }
 
-/* التاريخ والوقت */
-function updateTime(){
-let d=new Date();
-document.getElementById("dt").innerHTML =
-d.toLocaleDateString("ar-IQ")+" | "+d.toLocaleTimeString("ar-IQ");
+/* اظهار كلمة المرور */
+function toggle(){
+let p=document.getElementById("pass");
+p.type = p.type==="password" ? "text" : "password";
 }
 
-function togglePass(){
-let x=document.getElementById("pass");
-x.type = x.type==="password" ? "text" : "password";
-}
+/* ساعة الانتظار عند الانتقال */
+window.addEventListener("beforeunload", function () {
+  document.getElementById("wait").style.display="flex";
+});
 </script>
 
 </body>

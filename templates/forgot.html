@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>استعادة كلمة المرور</title>
+
+<style>
+body{
+margin:0;
+font-family:Tahoma;
+background:#000;
+display:flex;
+align-items:center;
+justify-content:center;
+height:100vh;
+}
+
+/* البانر */
+.banner{
+background:linear-gradient(45deg,#00c6ff,#0072ff);
+padding:30px;
+border-radius:20px;
+text-align:center;
+color:white;
+width:90%;
+max-width:420px;
+box-shadow:0 0 25px #00c6ff;
+}
+
+h2{
+margin-bottom:15px;
+font-size:26px;
+}
+
+p{
+font-size:18px;
+line-height:1.8;
+}
+
+a{
+display:inline-block;
+margin-top:20px;
+padding:10px 25px;
+background:#fff;
+color:#0072ff;
+text-decoration:none;
+border-radius:8px;
+font-weight:bold;
+}
+
+/* شاشة الانتظار */
+#wait{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(255,255,255,0.85);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:9999;
+}
+
+#wait .box-wait{
+background:white;
+padding:22px 35px;
+border-radius:12px;
+text-align:center;
+font-size:18px;
+font-weight:bold;
+color:#0b4fa3;
+box-shadow:0 0 15px rgba(0,0,0,.2);
+}
+</style>
+</head>
+
+<body>
+
+<!-- شاشة الانتظار -->
+<div id="wait">
+  <div class="box-wait">
+    ⏳
+    <div>يرجى الانتظار</div>
+  </div>
+</div>
+
+<div class="banner">
+
+<h2>تنبيه</h2>
+
+<p>
+<strong>يرجى مراجعة<br>
+قسم الشؤون الإدارية</strong><br>
+لإعادة تعيين كلمة المرور
+</p>
+
+<a href="/">العودة لتسجيل الدخول</a>
+
+</div>
+
+<script>
+/* ساعة الانتظار عند الانتقال */
+window.addEventListener("beforeunload", function () {
+  document.getElementById("wait").style.display="flex";
+});
+</script>
+
+</body>
+</html>

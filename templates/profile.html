@@ -21,13 +21,13 @@ padding:25px 15px;
 text-align:center
 }
 
-/* الشعار بدون تكسر */
+/* الشعار */
 .header img{
-    max-width:180px;
-    height:auto;
-    object-fit:contain;
-    background:white;
-    padding:10px;
+max-width:180px;
+height:auto;
+object-fit:contain;
+background:white;
+padding:10px;
 }
 
 /* العناوين */
@@ -86,10 +86,47 @@ text-decoration:none;
 margin:0 10px;
 color:#083b7c
 }
+
+/* شاشة الانتظار */
+#wait{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(255,255,255,0.85);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:9999;
+}
+
+#wait .box-wait{
+background:white;
+padding:22px 35px;
+border-radius:12px;
+text-align:center;
+font-size:18px;
+font-weight:bold;
+color:#0b4fa3;
+box-shadow:0 0 15px rgba(0,0,0,.2);
+}
 </style>
 </head>
 
 <body>
+
+{% macro show(val) -%}
+{{ val if val==val and val not in ["", "None"] else "لا يوجد" }}
+{%- endmacro %}
+
+<!-- شاشة الانتظار -->
+<div id="wait">
+  <div class="box-wait">
+    ⏳
+    <div>يرجى الانتظار</div>
+  </div>
+</div>
 
 <div class="header">
 <img src="{{ url_for('static', filename='new_logo.png') }}">
@@ -103,45 +140,44 @@ color:#083b7c
 
 <tr>
 <td class="k">الرقم الوظيفي</td>
-<td>{{ emp_id }}</td>
+<td>{{ show(emp_id) }}</td>
 </tr>
 
 <tr>
 <td class="k">الاسم الكامل</td>
-<td>{{ data["الاسم الكامل"] }}</td>
+<td>{{ show(data["الاسم الكامل"]) }}</td>
 </tr>
 
 <tr>
 <td class="k">التحصيل الدراسي</td>
-<td>{{ data["التحصيل الدراسي"] }}</td>
+<td>{{ show(data["التحصيل الدراسي"]) }}</td>
 </tr>
 
 <tr>
 <td class="k">العنوان الوظيفي</td>
-<td>{{ data["العنوان الوظيفي"] }}</td>
+<td>{{ show(data["العنوان الوظيفي"]) }}</td>
 </tr>
 
 <tr>
 <td class="k">الدرجة الحالية</td>
-<td>{{ data["الدرجة"]|int }}</td>
+<td>{{ show(data["الدرجة"]|int) }}</td>
 </tr>
 
 <tr>
 <td class="k">المرحلة الحالية</td>
-<td>{{ data["المرحلة"]|int }}</td>
+<td>{{ show(data["المرحلة"]|int) }}</td>
 </tr>
 
-<!-- تاريخ الاستحقاق -->
 <tr>
 <td class="k">تاريخ الاستحقاق القادم</td>
 <td>
 <div class="box">
-📅 {{ formatted_date }}
+📅 {{ show(formatted_date) }}
 
 <div style="margin-top:6px;font-size:13px;color:#083b7c">
 ✔ بعد إضافة كتب الشكر  
 ✔ الخدمة المدوّرة  
-✔ جميع الخدمات الرسمية  
+✔ جميع الخدمات المحتسبة  
 </div>
 
 </div>
@@ -150,21 +186,19 @@ color:#083b7c
 
 <tr>
 <td class="k">عدد كتب الشكر</td>
-<td>{{ data["عدد كتب الشكر"]|int }}</td>
+<td>{{ show(data["عدد كتب الشكر"]|int) }}</td>
 </tr>
 
-{% if data["رقم وتاريخ الكتب"] is not none and data["رقم وتاريخ الكتب"]|string != "nan" %}
 <tr>
 <td class="k">رقم وتاريخ كتب الشكر</td>
 <td style="white-space:pre-line;">
-{{ (data["رقم وتاريخ الكتب"] | string).replace("||","\n") }}
+{{ show((data["رقم وتاريخ الكتب"]|string).replace("||","\n")) }}
 </td>
 </tr>
-{% endif %}
 
 <tr>
 <td class="k">الملاحظات</td>
-<td>{{ data["الملاحظات"] }}</td>
+<td>{{ show(data["الملاحظات"]) }}</td>
 </tr>
 
 </table>
@@ -179,6 +213,13 @@ color:#083b7c
 </div>
 
 </div>
+
+<script>
+/* ساعة الانتظار عند الانتقال */
+window.addEventListener("beforeunload", function () {
+  document.getElementById("wait").style.display="flex";
+});
+</script>
 
 </body>
 </html>
